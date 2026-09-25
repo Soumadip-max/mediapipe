@@ -87,11 +87,18 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setActiveTab("learning")}
+                        <a
+                            href="/auth/login"
                             className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all"
                         >
                             Log In
+                        </a>
+                        <a
+                            href="/auth/login"
+                            className="inline-flex items-center justify-center px-5 py-2 rounded-full bg-[#c3f400] text-xs font-bold text-[#283500] hover:bg-[#abd600] transition-all shadow-[0_0_20px_-4px_rgba(195,244,0,0.5)] cursor-pointer"
+                        >
+                            Get Started
+                        </a>
                         </button>
                         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#283500] shrink-0">
                             <span className="material-symbols-outlined text-lg">person</span>
