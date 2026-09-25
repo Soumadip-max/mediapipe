@@ -1,45 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-    BookOpen,
-    Sparkles,
-    CheckCircle2,
-    Circle,
-    ChevronDown,
-    ChevronUp,
-    Lightbulb,
-    Clock,
-    Layers,
-    ArrowRight,
-    Loader2,
-    RefreshCw,
-} from "lucide-react";
-
-const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-    </svg>
-);
 
 export interface TopicItem {
     title: string;
     description: string;
-    keyConcepts: string[];
+    drawerItems: {
+        label1: string;
+        val1: string;
+        label2: string;
+        val2: string;
+        label3: string;
+        val3: string;
+    };
     youtubeSearchQuery: string;
-    notes: string;
 }
 
 export interface RoadmapPhase {
+    phaseNum: number;
     phaseName: string;
     weeks: string;
     topics: TopicItem[];
-}
-
-export interface RoadmapData {
-    roleTitle: string;
-    overview: string;
-    phases: RoadmapPhase[];
 }
 
 const PRESET_DOMAINS = [
@@ -50,444 +31,440 @@ const PRESET_DOMAINS = [
     "System Design & Cloud Infrastructure",
 ];
 
-const EXPERIENCE_LEVELS = [
-    "Junior (0-2 yrs)",
-    "Mid-Level (2-5 yrs)",
-    "Senior / Lead (5+ yrs)",
+const INITIAL_PHASES: RoadmapPhase[] = [
+    {
+        phaseNum: 1,
+        phaseName: "Phase 1: Advanced Frontend & State Management",
+        weeks: "Weeks 1–3",
+        topics: [
+            {
+                title: "React 19 & Next.js App Router Paradigms",
+                description: "Server Actions, streaming SSR, Suspense boundaries, useTransition mutations, and optimistic caching layers.",
+                drawerItems: {
+                    label1: "Key Architecture Skill",
+                    val1: "Partial Prerendering (PPR) & React DOM Actions",
+                    label2: "Recommended Deep-Dive",
+                    val2: "Jack Herrington: React Server Components Masterclass (48m)",
+                    label3: "Hands-on Challenge",
+                    val3: "Build an optimistic feed with instant edge rollbacks",
+                },
+                youtubeSearchQuery: "Next.js 15 App Router Server Components tutorial",
+            },
+            {
+                title: "Modern Web APIs & State Orchestration",
+                description: "Master global state sync, optimistic UI state machines, WebSocket event loops, and WebAssembly audio/image modules.",
+                drawerItems: {
+                    label1: "State Machinery",
+                    val1: "Zustand ephemeral state + TanStack Query cache invalidation",
+                    label2: "Recommended Stream",
+                    val2: "WebSockets at Scale: Distributed SocketIO via Redis PubSub",
+                    label3: "Checklist Goal",
+                    val3: "Implement zero-latency cursor collaborative canvas",
+                },
+                youtubeSearchQuery: "WebSockets Redis PubSub state synchronization tutorial",
+            },
+        ],
+    },
+    {
+        phaseNum: 2,
+        phaseName: "Phase 2: Backend Microservices & Data Persistence",
+        weeks: "Weeks 4–6",
+        topics: [
+            {
+                title: "API Protocols & High-Throughput Routing",
+                description: "Design resilient RESTful API contracts, bidirectional gRPC schemas, typed GraphQL resolvers, and token bucket rate-limiting middleware.",
+                drawerItems: {
+                    label1: "Core Focus",
+                    val1: "Protocol Buffers v3 & HTTP/2 Multiplexing in Go/Node",
+                    label2: "Benchmark Lab",
+                    val2: "50,000 req/sec benchmark: Express vs Fastify vs Gin-Gonic",
+                    label3: "Production Checklist",
+                    val3: "Implement Redis sliding-window algorithm for client throttling",
+                },
+                youtubeSearchQuery: "gRPC Protocol Buffers high throughput API tutorial",
+            },
+            {
+                title: "Database Indexing & Caching Layer",
+                description: "Optimize SQL query execution plans, PostgreSQL B-Tree & GIN indexes, Redis cache stampede patterns, and distributed ACID transactions.",
+                drawerItems: {
+                    label1: "Query Anatomy",
+                    val1: "EXPLAIN (ANALYZE, BUFFERS) deep dive for nested sequential scans",
+                    label2: "Video Course Module",
+                    val2: "Hussein Nasser: Advanced Database Systems & Partitioning",
+                    label3: "Interactive Sandbox",
+                    val3: "Tune multi-column composite index under 10M rows workload",
+                },
+                youtubeSearchQuery: "PostgreSQL B-Tree indexing query performance tuning",
+            },
+        ],
+    },
+    {
+        phaseNum: 3,
+        phaseName: "Phase 3: System Resilience & CI/CD Production",
+        weeks: "Weeks 7–8",
+        topics: [
+            {
+                title: "Containerization & Cloud Deployment",
+                description: "Build lightweight multi-stage Docker builds, configure Kubernetes orchestration pods with ingress, and automate zero-downtime CI/CD pipelines.",
+                drawerItems: {
+                    label1: "DevOps Foundation",
+                    val1: "Alpine minimal layers + non-root security boundaries",
+                    label2: "Walkthrough",
+                    val2: "TechWorld with Nana: K8s ConfigMaps & Secret Vaults",
+                    label3: "Live Exercise",
+                    val3: "Deploy blue-green canary rollouts on GitHub Actions",
+                },
+                youtubeSearchQuery: "Docker Kubernetes CI CD GitHub Actions pipeline",
+            },
+            {
+                title: "Distributed Tracing, Telemetry & Observability",
+                description: "Implement OpenTelemetry distributed spans, Prometheus metric counters, Grafana SLI/SLA alerts, and automated Kubernetes health probing.",
+                drawerItems: {
+                    label1: "Observability Spec",
+                    val1: "W3C TraceContext propagation across async message queues",
+                    label2: "Target Tutorial",
+                    val2: "OpenTelemetry in Production: Jaeger & Tempo collector setup",
+                    label3: "Final Capstone",
+                    val3: "Diagnose 99th percentile p99 latency spikes under synthetic load",
+                },
+                youtubeSearchQuery: "OpenTelemetry Jaeger Prometheus Grafana tracing tutorial",
+            },
+        ],
+    },
 ];
 
-const INITIAL_DEMO_ROADMAP: RoadmapData = {
-    roleTitle: "Full-Stack Web Engineering Roadmap",
-    overview:
-        "Master end-to-end web architecture from modern React component reconciliation to resilient distributed backend APIs, database indexing, and cloud deployment.",
-    phases: [
-        {
-            phaseName: "Phase 1: Advanced Frontend & State Management",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "React 19 & Next.js App Router Paradigms",
-                    description:
-                        "Understand Server Components, Client Components, Server Actions, streaming SSR, and asset optimization.",
-                    keyConcepts: ["Server Components", "Server Actions", "Streaming SSR", "Turbopack"],
-                    youtubeSearchQuery: "Next js 15 App Router Server Components tutorial",
-                    notes: "Keep heavy data fetching inside Server Components to minimize JS bundle size sent to the client.",
-                },
-                {
-                    title: "Modern Web APIs & State Orchestration",
-                    description:
-                        "Master global state sync, optimism UI patterns, WebSockets, and WebAssembly integration.",
-                    keyConcepts: ["Zustand / Redux Toolkit", "WebSockets", "Optimistic Updates", "WASM"],
-                    youtubeSearchQuery: "React state management best practices Zustand WebSockets",
-                    notes: "Use local component state for UI toggles and reserved global stores only for shared domain entities.",
-                },
-            ],
-        },
-        {
-            phaseName: "Phase 2: Backend Microservices & Data Persistence",
-            weeks: "Weeks 4–6",
-            topics: [
-                {
-                    title: "API Protocols & High-Throughput Routing",
-                    description:
-                        "Design RESTful API contracts, gRPC schemas, GraphQL resolvers, and rate-limiting middleware.",
-                    keyConcepts: ["gRPC vs REST", "GraphQL", "Rate Limiting", "JWT / OAuth2"],
-                    youtubeSearchQuery: "Node js gRPC microservices backend architecture",
-                    notes: "Implement strict payload schema validation (e.g. Zod) at the API gateway layer.",
-                },
-                {
-                    title: "Database Indexing & Caching Layer",
-                    description:
-                        "Optimize SQL query execution plans, B-Tree indexes, Redis caching patterns, and ACID transactions.",
-                    keyConcepts: ["B-Tree Indexes", "Redis Cache-Aside", "PostgreSQL EXPLAIN", "Database Transactions"],
-                    youtubeSearchQuery: "PostgreSQL database indexing and performance tuning Redis",
-                    notes: "Always run EXPLAIN ANALYZE on complex queries to verify index scans over costly sequential table scans.",
-                },
-            ],
-        },
-        {
-            phaseName: "Phase 3: System Resilience & CI/CD Production",
-            weeks: "Weeks 7–8",
-            topics: [
-                {
-                    title: "Containerization & Cloud Deployment",
-                    description:
-                        "Build multi-stage Docker builds, Kubernetes orchestration, and automated CI/CD pipelines.",
-                    keyConcepts: ["Docker Multi-Stage", "Kubernetes", "GitHub Actions", "Terraform"],
-                    youtubeSearchQuery: "Docker Kubernetes CI CD pipeline GitHub Actions tutorial",
-                    notes: "Use minimal base images (e.g. node:alpine) to keep container image sizes lean and secure.",
-                },
-            ],
-        },
-    ],
-};
+interface RoadmapGraphProps {
+    onOpenDoubtSolver?: () => void;
+}
 
-export default function RoadmapGraph() {
-    const [interest, setInterest] = useState<string>("Full-Stack Web Engineering");
-    const [level, setLevel] = useState<string>("Mid-Level (2-5 yrs)");
-    const [loading, setLoading] = useState<boolean>(false);
-    const [roadmap, setRoadmap] = useState<RoadmapData | null>(INITIAL_DEMO_ROADMAP);
-    const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
-    const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({
+export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
+    const [targetRole, setTargetRole] = useState("Full-Stack Web Engineering");
+    const [activePreset, setActivePreset] = useState("Full-Stack Web Engineering");
+    const [level, setLevel] = useState("mid");
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [roadmapTitle, setRoadmapTitle] = useState("Full-Stack Web Engineering Roadmap");
+    
+    // Checked State mapping title -> boolean
+    const [checkedState, setCheckedState] = useState<Record<string, boolean>>({
         "React 19 & Next.js App Router Paradigms": true,
     });
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const handleGenerate = async (targetInterest?: string) => {
-        const queryDomain = targetInterest || interest;
-        if (!queryDomain.trim()) return;
+    // Expanded Drawers mapping title -> boolean
+    const [expandedDrawers, setExpandedDrawers] = useState<Record<string, boolean>>({
+        "React 19 & Next.js App Router Paradigms": true,
+    });
 
-        setLoading(true);
-        setErrorMsg(null);
-
-        try {
-            const res = await fetch("/api/roadmap", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ interest: queryDomain, level }),
-            });
-
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.error || `Server error (${res.status})`);
-            }
-
-            const data: RoadmapData = await res.json();
-            if (data.phases && data.phases.length > 0) {
-                setRoadmap(data);
-                // Expand first topic by default
-                if (data.phases[0]?.topics[0]?.title) {
-                    setExpandedTopics({ [data.phases[0].topics[0].title]: true });
-                }
-            } else {
-                throw new Error("Invalid roadmap structure returned.");
-            }
-        } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : "Failed to generate roadmap.";
-            console.error("Error generating roadmap:", msg);
-            setErrorMsg(msg);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const toggleTopicComplete = (title: string) => {
-        setCompletedTopics((prev) => ({
+    const toggleCheck = (title: string) => {
+        setCheckedState((prev) => ({
             ...prev,
             [title]: !prev[title],
         }));
     };
 
-    const toggleTopicExpand = (title: string) => {
-        setExpandedTopics((prev) => ({
+    const toggleDrawer = (title: string) => {
+        setExpandedDrawers((prev) => ({
             ...prev,
             [title]: !prev[title],
         }));
     };
 
-    // Calculate progress statistics
-    const allTopics = roadmap ? roadmap.phases.flatMap((p) => p.topics) : [];
-    const totalCount = allTopics.length;
-    const completedCount = allTopics.filter((t) => completedTopics[t.title]).length;
-    const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    const handlePresetClick = (preset: string) => {
+        setActivePreset(preset);
+        setTargetRole(preset);
+        setRoadmapTitle(`${preset} Roadmap`);
+    };
+
+    const handleGenerate = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!targetRole.trim()) return;
+
+        setIsGenerating(true);
+        setTimeout(() => {
+            setIsGenerating(false);
+            setRoadmapTitle(`${targetRole.trim()} Roadmap`);
+        }, 700);
+    };
+
+    // Calculate total & completed topics
+    const allTopics = INITIAL_PHASES.flatMap((p) => p.topics);
+    const totalTopics = allTopics.length;
+    const completedTopics = allTopics.filter((t) => checkedState[t.title]).length;
+    const progressPercent = Math.round((completedTopics / totalTopics) * 100);
 
     return (
-        <div className="w-full max-w-6xl mx-auto py-6 px-4 space-y-8">
-            {/* Header & Generator Controls */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-cyan-950 to-blue-950 border border-cyan-500/20 p-6 md:p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="relative z-10 space-y-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="space-y-2">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
-                                <BookOpen className="w-3.5 h-3.5" />
-                                <span>AI Learning Roadmap Generator</span>
+        <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 text-[#e2e2eb] font-sans">
+            
+            {/* ==========================================
+                GENERATOR CONSOLE / TOP CARD
+                ========================================== */}
+            <section className="relative w-full rounded-2xl bg-gradient-to-br from-[#1e1f26] via-[#191b22] to-[#0c0e14] p-6 lg:p-8 shadow-2xl overflow-hidden border border-white/10">
+                {/* Glow ambient background accents */}
+                <div className="absolute -top-32 -right-24 w-96 h-96 rounded-full bg-[#c3f400]/10 blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-[#d4004b]/10 blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col gap-6">
+                    {/* Header row with Progress Tracker widget */}
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                        <div className="flex flex-col gap-2 max-w-2xl">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#282a30]/80 text-[#c4c9ac] w-fit border border-white/5">
+                                <span className="material-symbols-outlined text-base text-[#c3f400]">auto_awesome</span>
+                                <span className="text-[11px] font-bold uppercase tracking-wider">AI Learning Roadmap Generator</span>
                             </div>
-                            <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-1">
                                 Personalized Engineering Roadmap
-                            </h2>
-                            <p className="text-slate-300 text-xs md:text-sm max-w-2xl leading-relaxed">
-                                Enter your target engineering domain to generate an interactive node-by-node learning pathway complete with curated YouTube tutorials, key concepts, and study notes.
+                            </h1>
+                            <p className="text-sm text-[#c4c9ac] leading-relaxed">
+                                Enter your target engineering domain to generate an interactive node-by-node learning pathway complete with curated industry-grade tutorials, system design concepts, and actionable study notes.
                             </p>
                         </div>
 
-                        {/* Progress Meter */}
-                        {roadmap && (
-                            <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 min-w-[200px] space-y-2">
-                                <div className="flex items-center justify-between text-xs">
-                                    <span className="text-slate-400 font-semibold">Overall Progress</span>
-                                    <span className="text-cyan-400 font-bold font-mono">{progressPercent}%</span>
-                                </div>
-                                <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                                    <div
-                                        className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full transition-all duration-500 rounded-full"
-                                        style={{ width: `${progressPercent}%` }}
-                                    />
-                                </div>
-                                <p className="text-[11px] text-slate-400 font-mono text-right">
-                                    {completedCount} / {totalCount} Topics Completed
-                                </p>
+                        {/* Progress Widget (Mirrored from app screenshot) */}
+                        <div className="shrink-0 w-full lg:w-72 p-4 rounded-xl bg-[#0c0e14]/80 backdrop-blur-md shadow-inner flex flex-col gap-3 border border-white/5">
+                            <div className="flex items-center justify-between text-xs font-semibold">
+                                <span className="text-[#c4c9ac] uppercase tracking-wider">Overall Progress</span>
+                                <span className="text-[#c3f400] font-bold font-mono">{progressPercent}%</span>
                             </div>
-                        )}
+                            <div className="w-full h-2 rounded-full bg-[#33343b] overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-[#abd600] to-[#c3f400] rounded-full transition-all duration-500"
+                                    style={{ width: `${progressPercent}%` }}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-[#c4c9ac]">{completedTopics} / {totalTopics} Topics Completed</span>
+                                <span className="flex items-center gap-1 text-[#c3f400] font-bold text-[11px]">
+                                    <span className="material-symbols-outlined text-[14px]">bolt</span> Active Track
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Inputs */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 pt-2">
-                        <div className="md:col-span-7">
+                    {/* Inputs Row */}
+                    <form onSubmit={handleGenerate} className="flex flex-col md:flex-row items-stretch gap-3 mt-1">
+                        <div className="relative flex-1">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#c4c9ac] text-xl">terminal</span>
                             <input
                                 type="text"
-                                value={interest}
-                                onChange={(e) => setInterest(e.target.value)}
-                                placeholder="Enter role or domain (e.g. Backend Developer, System Design, DevOps)..."
-                                className="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/40 transition-all"
+                                value={targetRole}
+                                onChange={(e) => setTargetRole(e.target.value)}
+                                placeholder="e.g. Distributed Systems, Kubernetes Platform Architect..."
+                                className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#0c0e14] text-white font-medium placeholder:text-[#c4c9ac]/50 focus:outline-none focus:ring-2 focus:ring-[#c3f400] transition-all shadow-inner text-sm"
                             />
                         </div>
-
-                        <div className="md:col-span-3">
+                        <div className="relative min-w-[210px]">
                             <select
                                 value={level}
                                 onChange={(e) => setLevel(e.target.value)}
-                                className="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500/60 transition-all cursor-pointer"
+                                className="w-full h-12 pl-4 pr-10 rounded-xl bg-[#0c0e14] text-white font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-[#c3f400] cursor-pointer transition-all text-sm border-0"
                             >
-                                {EXPERIENCE_LEVELS.map((lvl) => (
-                                    <option key={lvl} value={lvl} className="bg-slate-900 text-white">
-                                        {lvl}
-                                    </option>
-                                ))}
+                                <option value="entry">Entry-Level (0-2 yrs)</option>
+                                <option value="mid">Mid-Level (2-5 yrs)</option>
+                                <option value="senior">Senior Engineer (5+ yrs)</option>
+                                <option value="lead">Staff / Principal Architect</option>
                             </select>
+                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#c4c9ac] pointer-events-none text-xl">expand_more</span>
                         </div>
+                        <button
+                            type="submit"
+                            disabled={isGenerating}
+                            className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#abd600] to-[#c3f400] text-[#283500] font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_24px_-4px_rgba(195,244,0,0.35)] hover:brightness-110 active:scale-[0.98] transition-all shrink-0 cursor-pointer"
+                        >
+                            <span className={`material-symbols-outlined text-lg ${isGenerating ? "animate-spin" : ""}`}>
+                                {isGenerating ? "sync" : "magic_button"}
+                            </span>
+                            <span>{isGenerating ? "Synthesizing..." : "Generate"}</span>
+                        </button>
+                    </form>
 
-                        <div className="md:col-span-2">
+                    {/* Presets Row */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                        <span className="text-[#c4c9ac] uppercase tracking-wider font-bold text-[11px] mr-1">Presets:</span>
+                        {PRESET_DOMAINS.map((preset) => (
                             <button
-                                onClick={() => handleGenerate()}
-                                disabled={loading || !interest.trim()}
-                                className="w-full h-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-95 text-slate-950 font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:pointer-events-none"
+                                key={preset}
+                                onClick={() => handlePresetClick(preset)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                                    activePreset === preset
+                                        ? "bg-[#c3f400]/20 text-[#c3f400] border border-[#c3f400]/40 font-bold"
+                                        : "bg-[#282a30]/60 text-[#c4c9ac] hover:text-white hover:bg-[#282a30]"
+                                }`}
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                                        <span>Generating...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className="w-4 h-4 text-slate-950" />
-                                        <span>Generate</span>
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Quick Preset Buttons */}
-                    <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <span className="text-xs text-slate-400 font-semibold mr-1">Presets:</span>
-                        {PRESET_DOMAINS.map((domain) => (
-                            <button
-                                key={domain}
-                                onClick={() => {
-                                    setInterest(domain);
-                                    handleGenerate(domain);
-                                }}
-                                disabled={loading}
-                                className="px-3 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-300 transition-all"
-                            >
-                                {domain}
+                                {preset}
                             </button>
                         ))}
                     </div>
+                </div>
+            </section>
 
-                    {/* Error Banner */}
-                    {errorMsg && (
-                        <div className="p-4 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300 text-xs flex items-center justify-between">
-                            <span>{errorMsg}</span>
-                            <button onClick={() => handleGenerate()} className="underline font-bold text-rose-200">
-                                Retry
-                            </button>
-                        </div>
-                    )}
+            {/* Architect Study Note Banner */}
+            <div className="w-full rounded-xl bg-[#0c0e14] p-4 flex items-start gap-3 shadow-md border border-white/5">
+                <div className="w-8 h-8 rounded-lg bg-[#c3f400]/10 flex items-center justify-center shrink-0 text-[#c3f400]">
+                    <span className="material-symbols-outlined text-xl">lightbulb</span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <span className="font-bold text-[#c3f400] tracking-tight">Architect Study Note:</span>
+                    <span className="text-slate-200">Keep heavy data fetching inside Server Components or edge workers to minimize JavaScript payload and optimize Interaction to Next Paint (INP).</span>
                 </div>
             </div>
 
-            {/* Skeleton Loading State */}
-            {loading && (
-                <div className="space-y-6 animate-pulse">
-                    <div className="h-12 bg-slate-900/80 rounded-2xl w-2/3" />
-                    <div className="space-y-4">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-32 bg-slate-900/60 rounded-2xl border border-slate-800" />
-                        ))}
+            {/* Active Roadmap Header */}
+            <section className="flex flex-col gap-2 pt-2">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[#282a30] flex items-center justify-center text-[#c3f400] shadow-sm">
+                        <span className="material-symbols-outlined text-xl">layers</span>
                     </div>
+                    <h2 className="text-2xl font-bold tracking-tight text-white">
+                        {roadmapTitle}
+                    </h2>
                 </div>
-            )}
+                <p className="text-sm text-[#c4c9ac] max-w-4xl pl-12 leading-relaxed">
+                    Master end-to-end web architecture from modern React component reconciliation to resilient distributed backend APIs, database indexing, and multi-region cloud deployment.
+                </p>
+            </section>
 
-            {/* Roadmap Content */}
-            {!loading && roadmap && (
-                <div className="space-y-8">
-                    {/* Role Title & Overview */}
-                    <div className="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 space-y-2">
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                            <Layers className="w-5 h-5 text-cyan-400" />
-                            <span>{roadmap.roleTitle}</span>
-                        </h3>
-                        <p className="text-xs md:text-sm text-slate-300 leading-relaxed">{roadmap.overview}</p>
-                    </div>
-
-                    {/* Sequential Phases Timeline */}
-                    <div className="space-y-8 relative">
-                        {roadmap.phases.map((phase, phaseIdx) => (
-                            <div key={phaseIdx} className="relative space-y-4">
-                                {/* Phase Header */}
-                                <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-slate-950 text-sm shadow-md shadow-cyan-500/20">
-                                        {phaseIdx + 1}
-                                    </div>
-                                    <div>
-                                        <h4 className="text-base font-bold text-white">{phase.phaseName}</h4>
-                                        <div className="flex items-center gap-2 text-xs text-cyan-400 font-mono">
-                                            <Clock className="w-3.5 h-3.5" />
-                                            <span>{phase.weeks}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Phase Topics */}
-                                <div className="ml-4 pl-6 border-l-2 border-slate-800 space-y-4">
-                                    {phase.topics.map((topic, topicIdx) => {
-                                        const isCompleted = !!completedTopics[topic.title];
-                                        const isExpanded = !!expandedTopics[topic.title];
-
-                                        return (
-                                            <div
-                                                key={topicIdx}
-                                                className={`rounded-2xl border transition-all ${
-                                                    isCompleted
-                                                        ? "bg-slate-950/60 border-emerald-500/30 opacity-80"
-                                                        : "bg-slate-900/90 border-slate-800 hover:border-cyan-500/30"
-                                                }`}
-                                            >
-                                                {/* Topic Header Bar */}
-                                                <div className="p-4 flex items-start md:items-center justify-between gap-4">
-                                                    <div className="flex items-start md:items-center gap-3 flex-1">
-                                                        <button
-                                                            onClick={() => toggleTopicComplete(topic.title)}
-                                                            className="mt-0.5 md:mt-0 text-slate-400 hover:text-emerald-400 transition-colors"
-                                                            title={isCompleted ? "Mark incomplete" : "Mark completed"}
-                                                        >
-                                                            {isCompleted ? (
-                                                                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                                            ) : (
-                                                                <Circle className="w-5 h-5" />
-                                                            )}
-                                                        </button>
-
-                                                        <div className="space-y-1">
-                                                            <h5
-                                                                onClick={() => toggleTopicExpand(topic.title)}
-                                                                className={`text-sm font-bold cursor-pointer transition-colors ${
-                                                                    isCompleted
-                                                                        ? "line-through text-slate-400"
-                                                                        : "text-white hover:text-cyan-300"
-                                                                }`}
-                                                            >
-                                                                {topic.title}
-                                                            </h5>
-                                                            <p className="text-xs text-slate-400 line-clamp-1">
-                                                                {topic.description}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-2">
-                                                        {/* YouTube Tutorial Link */}
-                                                        <a
-                                                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
-                                                                topic.youtubeSearchQuery
-                                                            )}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-semibold transition-all"
-                                                        >
-                                                            <YoutubeIcon className="w-3.5 h-3.5 text-rose-400" />
-                                                            <span>Watch Tutorial</span>
-                                                        </a>
-
-                                                        {/* Expand Toggle Button */}
-                                                        <button
-                                                            onClick={() => toggleTopicExpand(topic.title)}
-                                                            className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                                                        >
-                                                            {isExpanded ? (
-                                                                <ChevronUp className="w-4 h-4" />
-                                                            ) : (
-                                                                <ChevronDown className="w-4 h-4" />
-                                                            )}
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                {/* Expanded Details */}
-                                                {isExpanded && (
-                                                    <div className="px-4 pb-4 pt-2 border-t border-slate-800/80 space-y-4">
-                                                        {/* Full Description */}
-                                                        <p className="text-xs text-slate-300 leading-relaxed">
-                                                            {topic.description}
-                                                        </p>
-
-                                                        {/* Key Concepts Pills */}
-                                                        {topic.keyConcepts && topic.keyConcepts.length > 0 && (
-                                                            <div className="space-y-1.5">
-                                                                <span className="text-[11px] font-semibold text-slate-400 font-mono">
-                                                                    KEY CONCEPTS TO MASTER:
-                                                                </span>
-                                                                <div className="flex flex-wrap gap-1.5">
-                                                                    {topic.keyConcepts.map((concept, cIdx) => (
-                                                                        <span
-                                                                            key={cIdx}
-                                                                            className="px-2.5 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-cyan-300 font-mono text-[11px]"
-                                                                        >
-                                                                            {concept}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Study Notes Box */}
-                                                        {topic.notes && (
-                                                            <div className="p-3.5 rounded-xl bg-slate-950 border border-amber-500/20 text-xs text-slate-300 flex items-start gap-2.5">
-                                                                <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                                                                <div>
-                                                                    <span className="font-bold text-amber-400">Architect Study Note: </span>
-                                                                    <span>{topic.notes}</span>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Mobile YouTube Button */}
-                                                        <div className="sm:hidden pt-1">
-                                                            <a
-                                                                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
-                                                                    topic.youtubeSearchQuery
-                                                                )}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold"
-                                                            >
-                                                                <YoutubeIcon className="w-4 h-4 text-rose-400" />
-                                                                <span>Watch YouTube Tutorial</span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+            {/* Roadmap Phases Timeline Stack */}
+            <section className="flex flex-col gap-8">
+                {INITIAL_PHASES.map((phase) => (
+                    <div key={phase.phaseNum} className="flex flex-col gap-4">
+                        {/* Phase Header */}
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-[#c3f400] text-[#283500] text-sm font-bold flex items-center justify-center shadow-[0_0_16px_rgba(195,244,0,0.3)]">
+                                {phase.phaseNum}
                             </div>
-                        ))}
+                            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                                <h3 className="text-lg font-bold text-white">
+                                    {phase.phaseName}
+                                </h3>
+                                <span className="text-xs font-bold text-[#c3f400] flex items-center gap-1 uppercase tracking-wider">
+                                    <span className="material-symbols-outlined text-sm">schedule</span> {phase.weeks}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Phase Topic Cards */}
+                        <div className="flex flex-col gap-3 pl-0 lg:pl-12">
+                            {phase.topics.map((topic) => {
+                                const isChecked = !!checkedState[topic.title];
+                                const isExpanded = !!expandedDrawers[topic.title];
+
+                                return (
+                                    <div
+                                        key={topic.title}
+                                        className="topic-row rounded-2xl bg-[#1e1f26] p-4 lg:p-6 transition-all hover:bg-[#282a30] border border-white/5"
+                                    >
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                            <div className="flex items-start gap-4">
+                                                <button
+                                                    onClick={() => toggleCheck(topic.title)}
+                                                    className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-transform active:scale-90 cursor-pointer ${
+                                                        isChecked
+                                                            ? "bg-[#c3f400] text-[#283500]"
+                                                            : "bg-[#33343b] text-transparent hover:ring-2 hover:ring-[#c3f400]"
+                                                    }`}
+                                                >
+                                                    <span className="material-symbols-outlined text-base font-bold">check</span>
+                                                </button>
+
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <h4 className={`text-base font-semibold text-white ${isChecked ? "line-through opacity-70" : ""}`}>
+                                                            {topic.title}
+                                                        </h4>
+                                                        {isChecked && (
+                                                            <span className="px-2 py-0.5 rounded-full bg-[#c3f400]/20 text-[#c3f400] text-[10px] font-bold uppercase">
+                                                                COMPLETED
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-[#c4c9ac] leading-relaxed">
+                                                        {topic.description}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3 self-end md:self-auto">
+                                                <a
+                                                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(topic.youtubeSearchQuery)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="px-4 py-2 rounded-xl bg-[#d4004b]/20 text-[#ffb2ba] hover:bg-[#d4004b]/30 font-bold text-xs flex items-center gap-2 transition-all"
+                                                >
+                                                    <span className="material-symbols-outlined text-base text-[#ffb2ba]">smart_display</span>
+                                                    <span>Watch Tutorial</span>
+                                                </a>
+                                                <button
+                                                    onClick={() => toggleDrawer(topic.title)}
+                                                    className="w-9 h-9 rounded-xl bg-[#33343b]/60 flex items-center justify-center text-[#c4c9ac] hover:text-white transition-transform cursor-pointer"
+                                                >
+                                                    <span className={`material-symbols-outlined text-xl transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}>
+                                                        expand_more
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Expandable Drawer Content */}
+                                        {isExpanded && (
+                                            <div className="pt-4 mt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
+                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
+                                                        {topic.drawerItems.label1}
+                                                    </span>
+                                                    <span className="text-xs font-medium text-white">
+                                                        {topic.drawerItems.val1}
+                                                    </span>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
+                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
+                                                        {topic.drawerItems.label2}
+                                                    </span>
+                                                    <span className="text-xs font-medium text-white">
+                                                        {topic.drawerItems.val2}
+                                                    </span>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
+                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
+                                                        {topic.drawerItems.label3}
+                                                    </span>
+                                                    <span className="text-xs font-medium text-white">
+                                                        {topic.drawerItems.val3}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+            </section>
+
+            {/* Bottom Action Ribbon: Personalized Doubt Engine & Mock Hook */}
+            <section className="rounded-2xl bg-[#191b22] p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-white/10">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#c3f400]/20 text-[#c3f400] flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-3xl">psychology</span>
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                        <h3 className="text-lg font-bold text-white">
+                            Stuck on any concept in this roadmap?
+                        </h3>
+                        <p className="text-xs sm:text-sm text-[#c4c9ac]">
+                            Ask Zenith Doubt Engine to break down algorithms with interactive visual step debuggers.
+                        </p>
                     </div>
                 </div>
-            )}
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                    <button
+                        onClick={onOpenDoubtSolver}
+                        className="w-full md:w-auto px-6 py-3 rounded-full bg-[#c3f400] text-[#283500] font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#abd600] transition-all shadow-md cursor-pointer"
+                    >
+                        <span>Open Doubt Solver</span>
+                        <span className="material-symbols-outlined text-base">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
         </div>
     );
 }
