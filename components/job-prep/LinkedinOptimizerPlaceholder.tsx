@@ -13,10 +13,10 @@ export default function LinkedinOptimizerPlaceholder() {
     return (
         <div className="w-full max-w-6xl mx-auto py-8 px-4 space-y-8">
             {/* Header Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-950 border border-cyan-500/20 p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-[#07090e] border border-[#c4f82a]/20 p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#c4f82a]/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 space-y-3">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#c4f82a]/10 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold">
                         <LinkedinIcon className="w-3.5 h-3.5" />
                         <span>Recruiter Visibility & Profile Optimizer</span>
                     </div>
@@ -50,10 +50,10 @@ export default function LinkedinOptimizerPlaceholder() {
                 ].map((item, idx) => (
                     <div
                         key={idx}
-                        className="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 space-y-3 hover:border-cyan-500/40 transition-all"
+                        className="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 space-y-3 hover:border-[#c4f82a]/40 transition-all"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
-                            <item.icon className="w-5 h-5 text-cyan-400" />
+                        <div className="w-10 h-10 rounded-xl bg-[#c4f82a]/10 border border-[#c4f82a]/30 flex items-center justify-center">
+                            <item.icon className="w-5 h-5 text-[#c4f82a]" />
                         </div>
                         <h3 className="text-base font-bold text-white">{item.title}</h3>
                         <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
@@ -64,15 +64,15 @@ export default function LinkedinOptimizerPlaceholder() {
             {/* Feature Status Note */}
             <div className="rounded-2xl bg-slate-900/60 border border-slate-800 p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                    <div className="w-8 h-8 rounded-full bg-[#c4f82a]/10 border border-[#c4f82a]/30 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-[#c4f82a]" />
                     </div>
                     <div>
                         <h4 className="text-sm font-bold text-white">Module 3B Integration Pending</h4>
                         <p className="text-xs text-slate-400">LinkedIn feedback engine route (`app/api/linkedin/route.ts`) will be wired next.</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-cyan-400 font-mono">
+                <div className="flex items-center gap-2 text-xs text-[#c4f82a] font-mono">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Shell Mounted</span>
                 </div>

@@ -99,6 +99,7 @@ export default function AudioRecorder({
             }
         } catch (error) {
             console.error("Error sending audio:", error);
+            alert("Network error: Could not connect to speech transcription service.");
         }
     };
 
@@ -121,7 +122,7 @@ export default function AudioRecorder({
                 <button
                     onClick={startRecording}
                     disabled={isProcessing || disabled}
-                    className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:pointer-events-none"
+                    className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                 >
                     <span className="w-2.5 h-2.5 rounded-full bg-slate-950" />
                     {isProcessing ? "Transcribing with Whisper..." : "Start Answering"}
@@ -129,7 +130,7 @@ export default function AudioRecorder({
             ) : (
                 <button
                     onClick={stopRecording}
-                    className="px-5 py-2.5 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-sm transition-all animate-pulse flex items-center gap-2 shadow-lg shadow-rose-500/30"
+                    className="px-5 py-2.5 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-bold text-sm transition-all animate-pulse flex items-center gap-2 shadow-lg shadow-rose-500/30 cursor-pointer"
                 >
                     <span className="w-2.5 h-2.5 rounded-full bg-white" />
                     Stop & Submit Answer

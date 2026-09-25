@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { FilesetResolver, FaceLandmarker } from "@mediapipe/tasks-vision";
-import AudioRecorder from "@/components/AudioRecorder";
+import AudioRecorder from "@/components/job-prep/AudioRecorder";
 
 interface RoundRecord {
     round: number;
@@ -535,20 +535,14 @@ export default function FaceAnalyzer() {
                                 <span className="w-2.5 h-2.5 rounded-full bg-[#c3f400] shadow-[0_0_12px_#c3f400]" />
                                 <h1 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">AI Interviewer Studio</h1>
                             </div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c3f400]/15 text-[#c3f400] text-xs font-bold uppercase border border-[#c3f400]/30">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#c3f400] animate-pulse" />
-                                    Live Session
-                                </span>
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#282a30] text-[#c4c9ac] text-xs font-medium">
-                                    <span className="material-symbols-outlined text-sm text-[#c3f400]">psychology</span>
-                                    {targetRole} • {experienceLevel}
-                                </span>
-                            </div>
                         </div>
 
                         {/* Record / Submit CTA Button */}
                         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                            <AudioRecorder
+                                onTranscriptionComplete={handleTranscriptionComplete}
+                                disabled={isAnalyzing || isSessionFinished}
+                            />
                             {isSessionFinished && (
                                 <button
                                     onClick={() => setShowSummaryModal(true)}
@@ -557,11 +551,6 @@ export default function FaceAnalyzer() {
                                     📊 View Final Summary
                                 </button>
                             )}
-
-                            <AudioRecorder
-                                onTranscriptionComplete={handleTranscriptionComplete}
-                                disabled={isSessionFinished || isAnalyzing}
-                            />
                         </div>
                     </div>
 

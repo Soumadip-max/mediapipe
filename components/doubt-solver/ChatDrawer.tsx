@@ -502,6 +502,7 @@ default:
                             onKeyDown={handleKeyDown}
                             placeholder="Ask any technical doubt, system design trade-off, or paste code snippet (Markdown & syntax supported)..."
                             rows={3}
+                            maxLength={4000}
                             className="w-full bg-transparent px-4 py-2 text-white placeholder:text-[#c4c9ac]/60 text-sm focus:outline-none resize-none leading-relaxed border-0 font-sans"
                         />
 
