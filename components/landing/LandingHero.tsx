@@ -56,9 +56,6 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
                             <span className="font-[#Plus_Jakarta_Sans] text-xl font-bold tracking-tight text-white group-hover:text-[#c3f400] transition-colors">
                                 Zenith
                             </span>
-                            <span className="px-1.5 py-0.5 rounded-full bg-[#c3f400] text-[#283500] font-mono text-[10px] uppercase font-bold">
-                                AI
-                            </span>
                         </div>
                     </button>
 
@@ -80,15 +77,6 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
                             Mock Interview
                         </button>
                         <button
-                            onClick={() => {
-                                setActiveTab("job-prep");
-                                setActiveJobSubTab("ats-checker");
-                            }}
-                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
-                        >
-                            Resume ATS
-                        </button>
-                        <button
                             onClick={() => setActiveTab("doubt-solver")}
                             className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
                         >
@@ -103,12 +91,6 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
                             className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all"
                         >
                             Log In
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("learning")}
-                            className="inline-flex items-center justify-center px-5 py-2 rounded-full bg-[#c3f400] text-xs font-bold text-[#283500] hover:bg-[#abd600] transition-all shadow-[0_0_20px_-4px_rgba(195,244,0,0.5)] cursor-pointer"
-                        >
-                            Get Started
                         </button>
                         <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#283500] shrink-0">
                             <span className="material-symbols-outlined text-lg">person</span>
@@ -132,13 +114,6 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
                         <div className="absolute top-80 -right-48 w-[420px] h-[420px] bg-[#d4004b]/20 blur-[130px] pointer-events-none rounded-full" />
 
                         <div className="relative max-w-[1360px] mx-auto px-6 lg:px-8 flex flex-col items-center text-center">
-                            {/* Trust Pill Badge */}
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#282a30]/90 text-[#e2e2eb] shadow-sm mb-6 backdrop-blur-md">
-                                <span className="text-[#c3f400] text-sm">⚡</span>
-                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#e2e2eb]">Powered by Next-Gen Career AI</span>
-                                <span className="w-1 h-1 rounded-full bg-[#8e9379]" />
-                                <span className="text-xs font-bold text-[#c3f400]">98.4% Placement Acceleration</span>
-                            </div>
 
                             {/* Main Hero Headline */}
                             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-[#e2e2eb] max-w-4xl mx-auto leading-[1.08]">
