@@ -3,18 +3,19 @@
 import React, { useState } from "react";
 import TopNavbar, { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
 import LandingHero from "@/components/landing/LandingHero";
-import FaceAnalyzer from "@/components/FaceAnalyzer";
+import FaceAnalyzer from "@/components/job-prep/FaceAnalyzer";
 import RoadmapGraph from "@/components/learning/RoadmapGraph";
 import AtsChecker from "@/components/job-prep/AtsChecker";
 import LinkedinOptimizer from "@/components/job-prep/LinkedinOptimizer";
 import ChatDrawer from "@/components/doubt-solver/ChatDrawer";
+import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState<MainTab>("home");
     const [activeJobSubTab, setActiveJobSubTab] = useState<JobSubTab>("mock-interview");
 
     return (
-        <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
+        <KineticGrid className="min-h-screen text-slate-100 flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
             {/* Top Bar Navigation Header */}
             <TopNavbar
                 activeTab={activeTab}
@@ -56,24 +57,6 @@ export default function Home() {
                     </div>
                 )}
             </main>
-
-            {/* Footer */}
-            <footer className="w-full border-t border-slate-800/60 py-6 px-4 bg-[#05070b] text-center text-xs text-slate-500">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-300">Zenith AI Platform</span>
-                        <span>© 2026 Zenith Career Systems Inc. All rights reserved.</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-slate-400">
-                        <button onClick={() => setActiveTab("home")} className="hover:text-[#c4f82a] transition-colors">
-                            Home
-                        </button>
-                        <button onClick={() => setActiveTab("learning")} className="hover:text-[#c4f82a] transition-colors">
-                            Roadmaps
-                        </button>
-                    </div>
-                </div>
-            </footer>
-        </div>
+        </KineticGrid>
     );
 }

@@ -79,7 +79,7 @@ export default function TopNavbar({
                             }}
                             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                                 activeTab === "job-prep"
-                                    ? "bg-blue-500 text-white font-extrabold shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
                                     : "text-slate-400 hover:text-white hover:bg-slate-800/60"
                             }`}
                         >
@@ -91,7 +91,7 @@ export default function TopNavbar({
                             onClick={() => setActiveTab("doubt-solver")}
                             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
                                 activeTab === "doubt-solver"
-                                    ? "bg-emerald-500 text-white font-extrabold shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
                                     : "text-slate-400 hover:text-white hover:bg-slate-800/60"
                             }`}
                         >
@@ -118,11 +118,11 @@ export default function TopNavbar({
                             onClick={() => setActiveJobSubTab("mock-interview")}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                                 activeJobSubTab === "mock-interview"
-                                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/40 shadow-sm"
+                                    ? "bg-[#c4f82a]/20 text-[#c4f82a] border border-[#c4f82a]/50 shadow-[0_0_10px_rgba(196,248,42,0.15)] font-bold"
                                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                             }`}
                         >
-                            <Video className="w-3.5 h-3.5 text-blue-400" />
+                            <Video className={`w-3.5 h-3.5 ${activeJobSubTab === "mock-interview" ? "text-[#c4f82a]" : "text-slate-400"}`} />
                             <span>1:1 Computer Vision AI Mock Interview</span>
                         </button>
 
@@ -130,11 +130,11 @@ export default function TopNavbar({
                             onClick={() => setActiveJobSubTab("ats-checker")}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                                 activeJobSubTab === "ats-checker"
-                                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm"
+                                    ? "bg-[#c4f82a]/20 text-[#c4f82a] border border-[#c4f82a]/50 shadow-[0_0_10px_rgba(196,248,42,0.15)] font-bold"
                                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                             }`}
                         >
-                            <FileText className="w-3.5 h-3.5 text-amber-400" />
+                            <FileText className={`w-3.5 h-3.5 ${activeJobSubTab === "ats-checker" ? "text-[#c4f82a]" : "text-slate-400"}`} />
                             <span>Instant ATS Resume Matcher</span>
                         </button>
 
@@ -142,11 +142,11 @@ export default function TopNavbar({
                             onClick={() => setActiveJobSubTab("linkedin-optimizer")}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                                 activeJobSubTab === "linkedin-optimizer"
-                                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm"
+                                    ? "bg-[#c4f82a]/20 text-[#c4f82a] border border-[#c4f82a]/50 shadow-[0_0_10px_rgba(196,248,42,0.15)] font-bold"
                                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                             }`}
                         >
-                            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                            <Sparkles className={`w-3.5 h-3.5 ${activeJobSubTab === "linkedin-optimizer" ? "text-[#c4f82a]" : "text-slate-400"}`} />
                             <span>LinkedIn Profile Inspector</span>
                         </button>
                     </div>

@@ -41,3 +41,10 @@ body {
   background: #475569;
 }
 
+/* Hide Next.js dev indicators and floating overlay badges */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-dev-overlay] {
+  display: none !important;
+}
+

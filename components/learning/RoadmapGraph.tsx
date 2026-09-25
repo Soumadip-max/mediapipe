@@ -133,26 +133,288 @@ const INITIAL_PHASES: RoadmapPhase[] = [
     },
 ];
 
+const DOMAIN_ROADMAPS: Record<string, RoadmapPhase[]> = {
+    "Full-Stack Web Engineering": [
+        {
+            phaseNum: 1,
+            phaseName: "Phase 1: Advanced Frontend & State Management",
+            weeks: "Weeks 1–3",
+            topics: [
+                {
+                    title: "React 19 & Next.js App Router Paradigms",
+                    description: "Server Actions, streaming SSR, Suspense boundaries, useTransition mutations, and optimistic caching layers.",
+                    drawerItems: {
+                        label1: "Key Architecture Skill",
+                        val1: "Partial Prerendering (PPR) & React DOM Actions",
+                        label2: "Recommended Deep-Dive",
+                        val2: "Jack Herrington: React Server Components Masterclass",
+                        label3: "Hands-on Challenge",
+                        val3: "Build an optimistic feed with instant edge rollbacks",
+                    },
+                    youtubeSearchQuery: "Next.js App Router Server Components tutorial",
+                },
+                {
+                    title: "Modern Web APIs & State Orchestration",
+                    description: "Master global state sync, optimistic UI state machines, WebSocket event loops, and WebAssembly audio/image modules.",
+                    drawerItems: {
+                        label1: "State Machinery",
+                        val1: "Zustand ephemeral state + TanStack Query cache invalidation",
+                        label2: "Recommended Stream",
+                        val2: "WebSockets at Scale: Distributed SocketIO via Redis PubSub",
+                        label3: "Checklist Goal",
+                        val3: "Implement zero-latency cursor collaborative canvas",
+                    },
+                    youtubeSearchQuery: "WebSockets Redis PubSub state synchronization tutorial",
+                },
+            ],
+        },
+        {
+            phaseNum: 2,
+            phaseName: "Phase 2: Backend Microservices & Data Persistence",
+            weeks: "Weeks 4–6",
+            topics: [
+                {
+                    title: "API Protocols & High-Throughput Routing",
+                    description: "Design resilient RESTful API contracts, bidirectional gRPC schemas, typed GraphQL resolvers, and token bucket rate-limiting middleware.",
+                    drawerItems: {
+                        label1: "Core Focus",
+                        val1: "Protocol Buffers v3 & HTTP/2 Multiplexing in Go/Node",
+                        label2: "Benchmark Lab",
+                        val2: "50,000 req/sec benchmark: Express vs Fastify vs Gin-Gonic",
+                        label3: "Production Checklist",
+                        val3: "Implement Redis sliding-window algorithm for client throttling",
+                    },
+                    youtubeSearchQuery: "gRPC Protocol Buffers high throughput API tutorial",
+                },
+                {
+                    title: "Database Indexing & Caching Layer",
+                    description: "Optimize SQL query execution plans, PostgreSQL B-Tree & GIN indexes, Redis cache stampede patterns, and distributed ACID transactions.",
+                    drawerItems: {
+                        label1: "Query Anatomy",
+                        val1: "EXPLAIN (ANALYZE, BUFFERS) deep dive for nested sequential scans",
+                        label2: "Video Course Module",
+                        val2: "Hussein Nasser: Advanced Database Systems & Partitioning",
+                        label3: "Interactive Sandbox",
+                        val3: "Tune multi-column composite index under 10M rows workload",
+                    },
+                    youtubeSearchQuery: "PostgreSQL B-Tree indexing query performance tuning",
+                },
+            ],
+        },
+        {
+            phaseNum: 3,
+            phaseName: "Phase 3: System Resilience & CI/CD Production",
+            weeks: "Weeks 7–8",
+            topics: [
+                {
+                    title: "Containerization & Cloud Deployment",
+                    description: "Build lightweight multi-stage Docker builds, configure Kubernetes orchestration pods with ingress, and automate zero-downtime CI/CD pipelines.",
+                    drawerItems: {
+                        label1: "DevOps Foundation",
+                        val1: "Alpine minimal layers + non-root security boundaries",
+                        label2: "Walkthrough",
+                        val2: "TechWorld with Nana: K8s ConfigMaps & Secret Vaults",
+                        label3: "Live Exercise",
+                        val3: "Deploy blue-green canary rollouts on GitHub Actions",
+                    },
+                    youtubeSearchQuery: "Docker Kubernetes CI CD GitHub Actions pipeline",
+                },
+            ],
+        },
+    ],
+    "Backend & Microservices Architecture": [
+        {
+            phaseNum: 1,
+            phaseName: "Phase 1: High-Performance Concurrent Runtimes",
+            weeks: "Weeks 1–3",
+            topics: [
+                {
+                    title: "Concurrency Primitives & Memory Models",
+                    description: "Goroutines, channels, mutex lock contention, thread safety, and thread-pool execution in Go / Node.js worker threads.",
+                    drawerItems: {
+                        label1: "Core Concepts",
+                        val1: "Atomic operations, memory barriers, work-stealing schedulers",
+                        label2: "Deep-Dive Tutorial",
+                        val2: "Go Concurrency Patterns & Mutex Lock Contention",
+                        label3: "Practical Benchmark",
+                        val3: "Profile lock contention using pprof and trace tools",
+                    },
+                    youtubeSearchQuery: "Go concurrency channels mutex pprof tutorial",
+                },
+                {
+                    title: "Message Brokers & Event-Driven Architecture",
+                    description: "Kafka partition rebalancing, RabbitMQ exchange topologies, idempotent consumers, and outbox transactional patterns.",
+                    drawerItems: {
+                        label1: "Event Streaming",
+                        val1: "Apache Kafka log compaction & exactly-once semantics",
+                        label2: "Architecture Blueprint",
+                        val2: "Transactional Outbox Pattern with Debezium CDC",
+                        label3: "Hands-on Lab",
+                        val3: "Implement consumer group rebalance handler",
+                    },
+                    youtubeSearchQuery: "Apache Kafka event driven architecture outbox pattern",
+                },
+            ],
+        },
+        {
+            phaseNum: 2,
+            phaseName: "Phase 2: Distributed Data & Caching",
+            weeks: "Weeks 4–6",
+            topics: [
+                {
+                    title: "Distributed Caching & Eviction Strategies",
+                    description: "Redis cluster partitioning, consistency hashing, cache-aside, write-through, and bloom filter membership queries.",
+                    drawerItems: {
+                        label1: "Cache Resilience",
+                        val1: "Consistent Hashing & Redis Cluster Sentinel Failover",
+                        label2: "Benchmark Guide",
+                        val2: "Preventing Cache Avalanche & Stampede with Singleflight",
+                        label3: "Interactive Task",
+                        val3: "Implement Redis LFU/LRU eviction with TTL jitter",
+                    },
+                    youtubeSearchQuery: "Redis cluster consistent hashing bloom filter tutorial",
+                },
+                {
+                    title: "Database Sharding & Replication",
+                    description: "Master-replica sync lag, horizontal database sharding key selection, 2PC saga patterns, and distributed locks.",
+                    drawerItems: {
+                        label1: "Storage Engine",
+                        val1: "Postgres Logical Replication & Vitess Sharding",
+                        label2: "System Design Guide",
+                        val2: "Designing Global DB Sharding Keys for High Throughput",
+                        label3: "Lab Exercise",
+                        val3: "Build a Redlock distributed lock manager in Redis",
+                    },
+                    youtubeSearchQuery: "Database horizontal sharding postgres vitess tutorial",
+                },
+            ],
+        },
+    ],
+    "Frontend & UI Performance": [
+        {
+            phaseNum: 1,
+            phaseName: "Phase 1: Browser Rendering Engine & Web Vitals",
+            weeks: "Weeks 1–3",
+            topics: [
+                {
+                    title: "DOM Reflow, Repaint & GPU Acceleration",
+                    description: "Critical rendering path, compositor layers, layout thrashing, content-visibility, and hardware-accelerated CSS transforms.",
+                    drawerItems: {
+                        label1: "Performance Metric",
+                        val1: "INP (Interaction to Next Paint) & LCP optimization",
+                        label2: "Video Masterclass",
+                        val2: "Chrome DevTools Performance Profiling & Flamecharts",
+                        label3: "Hands-on Lab",
+                        val3: "Eliminate main thread blocking tasks under 50ms",
+                    },
+                    youtubeSearchQuery: "Chrome DevTools web vitals INP LCP rendering performance",
+                },
+                {
+                    title: "Advanced JavaScript Memory Management",
+                    description: "V8 garbage collection sweeps, heap snapshot debugging, detached DOM memory leaks, and WeakRef caching.",
+                    drawerItems: {
+                        label1: "Memory Profiling",
+                        val1: "V8 Mark-Sweep GC & Detached DOM node isolation",
+                        label2: "Debugging Guide",
+                        val2: "Finding JS Heap Memory Leaks with Chrome Memory Profiler",
+                        label3: "Practical Task",
+                        val3: "Fix event listener closure memory leaks in single-page apps",
+                    },
+                    youtubeSearchQuery: "JavaScript V8 memory leak heap snapshot chrome devtools",
+                },
+            ],
+        },
+    ],
+    "Data Structures & Algorithms": [
+        {
+            phaseNum: 1,
+            phaseName: "Phase 1: Core Patterns & Graph Algorithms",
+            weeks: "Weeks 1–3",
+            topics: [
+                {
+                    title: "Two Pointers & Sliding Window Masterclass",
+                    description: "Dynamic window resizing, monotonic queue optimization, fast/slow pointers, and subarray sum invariants.",
+                    drawerItems: {
+                        label1: "Algorithmic Pattern",
+                        val1: "Sliding Window Maximum using Deque O(N)",
+                        label2: "Video Explanation",
+                        val2: "NeetCode: Sliding Window & Two Pointer Masterclass",
+                        label3: "Practice Problem",
+                        val3: "Solve Minimum Window Substring under 15 minutes",
+                    },
+                    youtubeSearchQuery: "Sliding window algorithm pattern NeetCode tutorial",
+                },
+                {
+                    title: "Graph Traversal: BFS, DFS & Topological Sort",
+                    description: "Kahn's algorithm, cycle detection, Dijkstra's shortest path, Union-Find disjoint sets, and minimum spanning trees.",
+                    drawerItems: {
+                        label1: "Graph Theory",
+                        val1: "Directed Acyclic Graphs (DAG) & Topological Ordering",
+                        label2: "Recommended Guide",
+                        val2: "William Fiset: Graph Theory Algorithms Course",
+                        label3: "Challenge Problem",
+                        val3: "Implement Course Schedule II DAG topological sort",
+                    },
+                    youtubeSearchQuery: "Graph theory topological sort Dijkstra algorithm tutorial",
+                },
+            ],
+        },
+    ],
+    "System Design & Cloud Infrastructure": [
+        {
+            phaseNum: 1,
+            phaseName: "Phase 1: Distributed Architecture & High Availability",
+            weeks: "Weeks 1–3",
+            topics: [
+                {
+                    title: "Load Balancers, API Gateways & Reverse Proxies",
+                    description: "Layer 4 vs Layer 7 load balancing, NGINX routing, Envoy proxy sidecars, SSL termination, and rate-limiting algorithms.",
+                    drawerItems: {
+                        label1: "Infrastructure Focus",
+                        val1: "Envoy Proxy Service Mesh & Consistent Ring Balancing",
+                        label2: "System Design Video",
+                        val2: "ByteByteGo: API Gateway vs Load Balancer vs Reverse Proxy",
+                        label3: "Architect Challenge",
+                        val3: "Configure NGINX rate-limiting with leaky bucket strategy",
+                    },
+                    youtubeSearchQuery: "System design API gateway load balancer Envoy tutorial",
+                },
+                {
+                    title: "Consensus Protocols & Fault Tolerance",
+                    description: "Raft consensus, Paxos quorums, split-brain mitigation, etcd key-value storage, and leader election mechanisms.",
+                    drawerItems: {
+                        label1: "Distributed Consensus",
+                        val1: "Raft Leader Election & Log Replication Consensus",
+                        label2: "Deep Dive Video",
+                        val2: "MIT 6.824: Distributed Systems Raft Protocol",
+                        label3: "Capstone Challenge",
+                        val3: "Simulate network partition recovery in a 3-node quorum",
+                    },
+                    youtubeSearchQuery: "Raft consensus algorithm MIT distributed systems tutorial",
+                },
+            ],
+        },
+    ],
+};
+
 interface RoadmapGraphProps {
     onOpenDoubtSolver?: () => void;
 }
 
 export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
-    const [targetRole, setTargetRole] = useState("Full-Stack Web Engineering");
-    const [activePreset, setActivePreset] = useState("Full-Stack Web Engineering");
+    const [targetRole, setTargetRole] = useState("");
+    const [activePreset, setActivePreset] = useState("");
     const [level, setLevel] = useState("mid");
     const [isGenerating, setIsGenerating] = useState(false);
-    const [roadmapTitle, setRoadmapTitle] = useState("Full-Stack Web Engineering Roadmap");
+    const [roadmapTitle, setRoadmapTitle] = useState("");
+    const [roadmapOverview, setRoadmapOverview] = useState("");
+    const [phases, setPhases] = useState<RoadmapPhase[]>([]);
     
     // Checked State mapping title -> boolean
-    const [checkedState, setCheckedState] = useState<Record<string, boolean>>({
-        "React 19 & Next.js App Router Paradigms": true,
-    });
+    const [checkedState, setCheckedState] = useState<Record<string, boolean>>({});
 
     // Expanded Drawers mapping title -> boolean
-    const [expandedDrawers, setExpandedDrawers] = useState<Record<string, boolean>>({
-        "React 19 & Next.js App Router Paradigms": true,
-    });
+    const [expandedDrawers, setExpandedDrawers] = useState<Record<string, boolean>>({});
 
     const toggleCheck = (title: string) => {
         setCheckedState((prev) => ({
@@ -168,28 +430,137 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
         }));
     };
 
+    const generateRoadmap = async (role: string, expLevel: string) => {
+        setIsGenerating(true);
+        try {
+            const res = await fetch("/api/roadmap", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ interest: role, level: expLevel }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.phases && Array.isArray(data.phases) && data.phases.length > 0) {
+                    const formattedPhases: RoadmapPhase[] = data.phases.map((p: any, idx: number) => ({
+                        phaseNum: idx + 1,
+                        phaseName: p.phaseName || `Phase ${idx + 1}: ${role} Foundations`,
+                        weeks: p.weeks || `Weeks ${idx * 2 + 1}–${idx * 2 + 3}`,
+                        topics: (p.topics || []).map((t: any) => ({
+                            title: t.title || "Core Technical Competency",
+                            description: t.description || "Master key architectural patterns and production best practices.",
+                            drawerItems: {
+                                label1: "Key Concepts",
+                                val1: Array.isArray(t.keyConcepts) ? t.keyConcepts.join(" • ") : (t.keyConcepts || "Core Foundations"),
+                                label2: "Architectural Notes",
+                                val2: t.notes || "Apply production patterns and best practices.",
+                                label3: "Hands-on Exercise",
+                                val3: `Build and benchmark ${t.title || "this module"} in sandbox.`,
+                            },
+                            youtubeSearchQuery: t.youtubeSearchQuery || `${t.title || role} tutorial`,
+                        })),
+                    }));
+
+                    setPhases(formattedPhases);
+                    if (data.roleTitle) setRoadmapTitle(data.roleTitle);
+                    if (data.overview) setRoadmapOverview(data.overview);
+                    setIsGenerating(false);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.warn("API roadmap generation fallback trigger:", err);
+        }
+
+        // Preset / Dynamic Fallback
+        if (DOMAIN_ROADMAPS[role]) {
+            setPhases(DOMAIN_ROADMAPS[role]);
+            setRoadmapOverview(`Comprehensive step-by-step pathway tailored for ${role}.`);
+        } else {
+            setPhases([
+                {
+                    phaseNum: 1,
+                    phaseName: `Phase 1: ${role} Foundations & Core Architecture`,
+                    weeks: "Weeks 1–3",
+                    topics: [
+                        {
+                            title: `${role} Core Fundamentals & Tooling`,
+                            description: `Master fundamental building blocks, core runtime paradigms, and design patterns essential for ${role}.`,
+                            drawerItems: {
+                                label1: "Target Competency",
+                                val1: `Advanced ${role} primitives and design contracts`,
+                                label2: "Recommended Tutorial",
+                                val2: `${role} Masterclass & Deep Dive`,
+                                label3: "Hands-on Goal",
+                                val3: `Implement end-to-end benchmark project for ${role}`,
+                            },
+                            youtubeSearchQuery: `${role} architecture tutorial`,
+                        },
+                        {
+                            title: `${role} Performance & Security Hardening`,
+                            description: `Optimize throughput, reduce latency spikes, and harden security boundaries for ${role} workloads.`,
+                            drawerItems: {
+                                label1: "Focus Area",
+                                val1: "Performance profiling & thread safety",
+                                label2: "Production Checklist",
+                                val2: "Zero-downtime deployment & fault recovery",
+                                label3: "Benchmark Goal",
+                                val3: "Profile latency bottlenecks using flamegraphs",
+                            },
+                            youtubeSearchQuery: `${role} performance optimization guide`,
+                        },
+                    ],
+                },
+                {
+                    phaseNum: 2,
+                    phaseName: `Phase 2: Advanced ${role} Systems & Cloud Production`,
+                    weeks: "Weeks 4–6",
+                    topics: [
+                        {
+                            title: `Distributed ${role} Scaling & Observability`,
+                            description: `Architect multi-region deployment, metric telemetry counters, distributed tracing spans, and SLI/SLA alerts.`,
+                            drawerItems: {
+                                label1: "Observability Spec",
+                                val1: "OpenTelemetry distributed tracing spans",
+                                label2: "Architecture Blueprint",
+                                val2: "Multi-region fallback & traffic routing",
+                                label3: "Final Capstone",
+                                val3: "Deploy automated Kubernetes canary rollout",
+                            },
+                            youtubeSearchQuery: `${role} distributed system design tutorial`,
+                        },
+                    ],
+                },
+            ]);
+            setRoadmapOverview(`Custom AI-generated learning pathway tailored for ${role} (${level} level).`);
+        }
+        setRoadmapTitle(`${role} Roadmap`);
+        setIsGenerating(false);
+    };
+
     const handlePresetClick = (preset: string) => {
         setActivePreset(preset);
         setTargetRole(preset);
         setRoadmapTitle(`${preset} Roadmap`);
+        if (DOMAIN_ROADMAPS[preset]) {
+            setPhases(DOMAIN_ROADMAPS[preset]);
+            setRoadmapOverview(`Comprehensive step-by-step pathway tailored for ${preset}.`);
+        } else {
+            generateRoadmap(preset, level);
+        }
     };
 
     const handleGenerate = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
-        if (!targetRole.trim()) return;
-
-        setIsGenerating(true);
-        setTimeout(() => {
-            setIsGenerating(false);
-            setRoadmapTitle(`${targetRole.trim()} Roadmap`);
-        }, 700);
+        if (!targetRole.trim()) {
+            setPhases([]);
+            setRoadmapTitle("");
+            setRoadmapOverview("");
+            setActivePreset("");
+            return;
+        }
+        generateRoadmap(targetRole.trim(), level);
     };
-
-    // Calculate total & completed topics
-    const allTopics = INITIAL_PHASES.flatMap((p) => p.topics);
-    const totalTopics = allTopics.length;
-    const completedTopics = allTopics.filter((t) => checkedState[t.title]).length;
-    const progressPercent = Math.round((completedTopics / totalTopics) * 100);
 
     return (
         <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 text-[#e2e2eb] font-sans">
@@ -203,40 +574,14 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                 <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-[#d4004b]/10 blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col gap-6">
-                    {/* Header row with Progress Tracker widget */}
-                    <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-                        <div className="flex flex-col gap-2 max-w-2xl">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#282a30]/80 text-[#c4c9ac] w-fit border border-white/5">
-                                <span className="material-symbols-outlined text-base text-[#c3f400]">auto_awesome</span>
-                                <span className="text-[11px] font-bold uppercase tracking-wider">AI Learning Roadmap Generator</span>
-                            </div>
-                            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-1">
-                                Personalized Engineering Roadmap
-                            </h1>
-                            <p className="text-sm text-[#c4c9ac] leading-relaxed">
-                                Enter your target engineering domain to generate an interactive node-by-node learning pathway complete with curated industry-grade tutorials, system design concepts, and actionable study notes.
-                            </p>
-                        </div>
-
-                        {/* Progress Widget (Mirrored from app screenshot) */}
-                        <div className="shrink-0 w-full lg:w-72 p-4 rounded-xl bg-[#0c0e14]/80 backdrop-blur-md shadow-inner flex flex-col gap-3 border border-white/5">
-                            <div className="flex items-center justify-between text-xs font-semibold">
-                                <span className="text-[#c4c9ac] uppercase tracking-wider">Overall Progress</span>
-                                <span className="text-[#c3f400] font-bold font-mono">{progressPercent}%</span>
-                            </div>
-                            <div className="w-full h-2 rounded-full bg-[#33343b] overflow-hidden">
-                                <div
-                                    className="h-full bg-gradient-to-r from-[#abd600] to-[#c3f400] rounded-full transition-all duration-500"
-                                    style={{ width: `${progressPercent}%` }}
-                                />
-                            </div>
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-[#c4c9ac]">{completedTopics} / {totalTopics} Topics Completed</span>
-                                <span className="flex items-center gap-1 text-[#c3f400] font-bold text-[11px]">
-                                    <span className="material-symbols-outlined text-[14px]">bolt</span> Active Track
-                                </span>
-                            </div>
-                        </div>
+                    {/* Header title & description */}
+                    <div className="flex flex-col gap-2 max-w-3xl">
+                        <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
+                            Personalized Engineering Roadmap
+                        </h1>
+                        <p className="text-sm text-[#c4c9ac] leading-relaxed">
+                            Enter your target engineering domain to generate an interactive node-by-node learning pathway complete with curated industry-grade tutorials, system design concepts, and actionable study notes.
+                        </p>
                     </div>
 
                     {/* Inputs Row */}
@@ -246,8 +591,18 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                             <input
                                 type="text"
                                 value={targetRole}
-                                onChange={(e) => setTargetRole(e.target.value)}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setTargetRole(val);
+                                    if (!val.trim()) {
+                                        setActivePreset("");
+                                        setPhases([]);
+                                        setRoadmapTitle("");
+                                        setRoadmapOverview("");
+                                    }
+                                }}
                                 placeholder="e.g. Distributed Systems, Kubernetes Platform Architect..."
+                                maxLength={200}
                                 className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#0c0e14] text-white font-medium placeholder:text-[#c4c9ac]/50 focus:outline-none focus:ring-2 focus:ring-[#c3f400] transition-all shadow-inner text-sm"
                             />
                         </div>
@@ -296,35 +651,27 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                 </div>
             </section>
 
-            {/* Architect Study Note Banner */}
-            <div className="w-full rounded-xl bg-[#0c0e14] p-4 flex items-start gap-3 shadow-md border border-white/5">
-                <div className="w-8 h-8 rounded-lg bg-[#c3f400]/10 flex items-center justify-center shrink-0 text-[#c3f400]">
-                    <span className="material-symbols-outlined text-xl">lightbulb</span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                    <span className="font-bold text-[#c3f400] tracking-tight">Architect Study Note:</span>
-                    <span className="text-slate-200">Keep heavy data fetching inside Server Components or edge workers to minimize JavaScript payload and optimize Interaction to Next Paint (INP).</span>
-                </div>
-            </div>
-
             {/* Active Roadmap Header */}
-            <section className="flex flex-col gap-2 pt-2">
-                <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#282a30] flex items-center justify-center text-[#c3f400] shadow-sm">
-                        <span className="material-symbols-outlined text-xl">layers</span>
+            {phases.length > 0 && (
+                <section className="flex flex-col gap-2 pt-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-[#282a30] flex items-center justify-center text-[#c3f400] shadow-sm">
+                            <span className="material-symbols-outlined text-xl">layers</span>
+                        </div>
+                        <h2 className="text-2xl font-bold tracking-tight text-white">
+                            {roadmapTitle}
+                        </h2>
                     </div>
-                    <h2 className="text-2xl font-bold tracking-tight text-white">
-                        {roadmapTitle}
-                    </h2>
-                </div>
-                <p className="text-sm text-[#c4c9ac] max-w-4xl pl-12 leading-relaxed">
-                    Master end-to-end web architecture from modern React component reconciliation to resilient distributed backend APIs, database indexing, and multi-region cloud deployment.
-                </p>
-            </section>
+                    <p className="text-sm text-[#c4c9ac] max-w-4xl pl-12 leading-relaxed">
+                        {roadmapOverview}
+                    </p>
+                </section>
+            )}
 
             {/* Roadmap Phases Timeline Stack */}
-            <section className="flex flex-col gap-8">
-                {INITIAL_PHASES.map((phase) => (
+            {phases.length > 0 && (
+                <section className="flex flex-col gap-8">
+                    {phases.map((phase) => (
                     <div key={phase.phaseNum} className="flex flex-col gap-4">
                         {/* Phase Header */}
                         <div className="flex items-center gap-3">
@@ -335,9 +682,6 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                                 <h3 className="text-lg font-bold text-white">
                                     {phase.phaseName}
                                 </h3>
-                                <span className="text-xs font-bold text-[#c3f400] flex items-center gap-1 uppercase tracking-wider">
-                                    <span className="material-symbols-outlined text-sm">schedule</span> {phase.weeks}
-                                </span>
                             </div>
                         </div>
 
@@ -439,32 +783,7 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                     </div>
                 ))}
             </section>
-
-            {/* Bottom Action Ribbon: Personalized Doubt Engine & Mock Hook */}
-            <section className="rounded-2xl bg-[#191b22] p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-white/10">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#c3f400]/20 text-[#c3f400] flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined text-3xl">psychology</span>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                        <h3 className="text-lg font-bold text-white">
-                            Stuck on any concept in this roadmap?
-                        </h3>
-                        <p className="text-xs sm:text-sm text-[#c4c9ac]">
-                            Ask Zenith Doubt Engine to break down algorithms with interactive visual step debuggers.
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button
-                        onClick={onOpenDoubtSolver}
-                        className="w-full md:w-auto px-6 py-3 rounded-full bg-[#c3f400] text-[#283500] font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#abd600] transition-all shadow-md cursor-pointer"
-                    >
-                        <span>Open Doubt Solver</span>
-                        <span className="material-symbols-outlined text-base">arrow_forward</span>
-                    </button>
-                </div>
-            </section>
+            )}
         </div>
     );
 }
