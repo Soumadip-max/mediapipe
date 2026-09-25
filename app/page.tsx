@@ -4,11 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import TopNavbar, { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
 import LandingHero from "@/components/landing/LandingHero";
-import FaceAnalyzer from "@/components/FaceAnalyzer";
+import FaceAnalyzer from "@/components/job-prep/FaceAnalyzer";
 import RoadmapGraph from "@/components/learning/RoadmapGraph";
 import AtsChecker from "@/components/job-prep/AtsChecker";
 import LinkedinOptimizer from "@/components/job-prep/LinkedinOptimizer";
 import ChatDrawer from "@/components/doubt-solver/ChatDrawer";
+import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function Home() {
     const { user, isLoading } = useUser();
@@ -32,7 +33,7 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
+        <KineticGrid className="min-h-screen text-slate-100 flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
             {/* Top Bar Navigation Header */}
             <TopNavbar
                 activeTab={activeTab}
@@ -93,5 +94,6 @@ export default function Home() {
                 </div>
             </footer>
         </div>
+        </KineticGrid>
     );
 }

@@ -104,11 +104,11 @@ export default function LinkedinOptimizer() {
     return (
         <div className="w-full max-w-6xl mx-auto py-6 px-4 space-y-8">
             {/* Header Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-950 border border-cyan-500/20 p-6 md:p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-[#07090e] border border-[#c4f82a]/20 p-6 md:p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#c4f82a]/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#c4f82a]/10 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold">
                             <LinkedinIcon className="w-3.5 h-3.5" />
                             <span>Recruiter Searchability & Profile Optimizer</span>
                         </div>
@@ -122,9 +122,9 @@ export default function LinkedinOptimizer() {
 
                     <button
                         onClick={loadSampleData}
-                        className="self-start md:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition-all flex items-center gap-2"
+                        className="self-start md:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold transition-all flex items-center gap-2"
                     >
-                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <Zap className="w-3.5 h-3.5 text-[#c4f82a]" />
                         <span>Load Sample Profile</span>
                     </button>
                 </div>
@@ -137,7 +137,7 @@ export default function LinkedinOptimizer() {
                     <div className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-white flex items-center gap-2">
-                                <Search className="w-4 h-4 text-cyan-400" />
+                                <Search className="w-4 h-4 text-[#c4f82a]" />
                                 <span>Target Recruiter Role *</span>
                             </label>
                             <input
@@ -145,12 +145,13 @@ export default function LinkedinOptimizer() {
                                 value={targetRole}
                                 onChange={(e) => setTargetRole(e.target.value)}
                                 placeholder="e.g. Full-Stack Engineer, Frontend Developer..."
-                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                                maxLength={200}
+                                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#c4f82a]/60 focus:ring-1 focus:ring-[#c4f82a]/30 transition-all"
                             />
                         </div>
 
                         <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-[11px] text-slate-400 leading-relaxed">
-                            <strong className="text-cyan-300 font-semibold">Pro Tip: </strong>
+                            <strong className="text-[#c4f82a] font-semibold">Pro Tip: </strong>
                             LinkedIn Recruiter uses boolean search algorithms. Providing your target role allows Gemini to inject high-volume recruiter search terms.
                         </div>
                     </div>
@@ -158,16 +159,16 @@ export default function LinkedinOptimizer() {
                     <button
                         onClick={handleOptimize}
                         disabled={loading || !profileText.trim()}
-                        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 active:scale-95 text-slate-950 font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:pointer-events-none"
+                        className="w-full py-3.5 px-6 rounded-xl bg-[#c4f82a] hover:bg-[#b5eb1e] active:scale-95 text-[#07090e] font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#c4f82a]/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                                <Loader2 className="w-4 h-4 animate-spin text-[#07090e]" />
                                 <span>Evaluating Profile...</span>
                             </>
                         ) : (
                             <>
-                                <Sparkles className="w-4 h-4 text-slate-950" />
+                                <Sparkles className="w-4 h-4 text-[#07090e]" />
                                 <span>Optimize Profile</span>
                             </>
                         )}
@@ -178,11 +179,11 @@ export default function LinkedinOptimizer() {
                 <div className="md:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-3">
                     <div className="flex items-center justify-between">
                         <label className="text-xs font-bold text-white flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-cyan-400" />
+                            <FileText className="w-4 h-4 text-[#c4f82a]" />
                             <span>LinkedIn Profile Content / About / Experience *</span>
                         </label>
                         <span className="text-[11px] text-slate-400 font-mono">
-                            {profileText.length} Characters
+                            {profileText.length} / 20,000 Characters
                         </span>
                     </div>
 
@@ -191,7 +192,8 @@ export default function LinkedinOptimizer() {
                         onChange={(e) => setProfileText(e.target.value)}
                         placeholder="Paste your LinkedIn headline, About section, and experience bullet points here..."
                         rows={10}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all resize-none"
+                        maxLength={20000}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#c4f82a]/60 focus:ring-1 focus:ring-[#c4f82a]/30 transition-all resize-none"
                     />
                 </div>
             </div>
@@ -225,12 +227,12 @@ export default function LinkedinOptimizer() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Overall Profile Health Score */}
                         <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 flex flex-col items-center justify-center text-center space-y-3 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4f82a]/10 rounded-full blur-2xl pointer-events-none" />
                             <span className="text-xs font-semibold text-slate-400 font-mono">
                                 PROFILE HEALTH SCORE
                             </span>
 
-                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-300 font-mono">
+                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#c4f82a] to-emerald-300 font-mono">
                                 {result.profileScore}%
                             </span>
 
@@ -262,7 +264,7 @@ export default function LinkedinOptimizer() {
                                 {result.missingRecruiterKeywords.slice(0, 6).map((kw, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-2.5 py-1 rounded-lg bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-mono"
+                                        className="px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-mono"
                                     >
                                         + {kw}
                                     </span>
@@ -292,7 +294,7 @@ export default function LinkedinOptimizer() {
                         <div className="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 space-y-4">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-base font-bold text-white flex items-center gap-2">
-                                    <Award className="w-4 h-4 text-amber-400" />
+                                    <Award className="w-4 h-4 text-[#c4f82a]" />
                                     <span>AI-Generated High-Converting Headlines</span>
                                 </h3>
                                 <span className="text-[11px] text-slate-400 font-mono">Click to Copy</span>
@@ -302,12 +304,12 @@ export default function LinkedinOptimizer() {
                                 {result.headlineSuggestions.map((headline, idx) => (
                                     <div
                                         key={idx}
-                                        className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-4 hover:border-cyan-500/40 transition-all"
+                                        className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-4 hover:border-[#c4f82a]/40 transition-all"
                                     >
-                                        <p className="text-xs font-mono text-cyan-200 flex-1">{headline}</p>
+                                        <p className="text-xs font-mono text-emerald-200 flex-1">{headline}</p>
                                         <button
                                             onClick={() => copyToClipboard(headline, `headline-${idx}`)}
-                                            className="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5"
+                                            className="px-3 py-1.5 rounded-lg bg-[#c4f82a]/10 hover:bg-[#c4f82a]/20 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer"
                                         >
                                             {copiedIndex === `headline-${idx}` ? (
                                                 <>
@@ -316,7 +318,7 @@ export default function LinkedinOptimizer() {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Copy className="w-3.5 h-3.5 text-cyan-400" />
+                                                    <Copy className="w-3.5 h-3.5 text-[#c4f82a]" />
                                                     <span>Copy Headline</span>
                                                 </>
                                             )}
@@ -332,7 +334,7 @@ export default function LinkedinOptimizer() {
                         <div className="rounded-2xl bg-slate-900/80 border border-slate-800 p-6 space-y-6">
                             <div>
                                 <h3 className="text-base font-bold text-white flex items-center gap-2">
-                                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                                    <Sparkles className="w-4 h-4 text-[#c4f82a]" />
                                     <span>Section-by-Section "Before vs. Optimized" Rewrites</span>
                                 </h3>
                                 <p className="text-xs text-slate-400 mt-1">
@@ -347,7 +349,7 @@ export default function LinkedinOptimizer() {
                                         className="rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-3"
                                     >
                                         <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                                            <span className="text-xs font-bold text-cyan-400">
+                                            <span className="text-xs font-bold text-[#c4f82a]">
                                                 SECTION: {fix.section}
                                             </span>
                                         </div>
@@ -365,12 +367,12 @@ export default function LinkedinOptimizer() {
                                         {/* Optimized Rewrite */}
                                         <div className="space-y-1">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[10px] font-bold text-cyan-400 font-mono uppercase tracking-wider">
+                                                <span className="text-[10px] font-bold text-[#c4f82a] font-mono uppercase tracking-wider">
                                                     OPTIMIZED LINKEDIN REWRITE
                                                 </span>
                                                 <button
                                                     onClick={() => copyToClipboard(fix.optimized, `fix-${idx}`)}
-                                                    className="flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 transition-colors"
+                                                    className="flex items-center gap-1 text-[11px] text-[#c4f82a] hover:text-[#d2fa52] transition-colors cursor-pointer"
                                                 >
                                                     {copiedIndex === `fix-${idx}` ? (
                                                         <>
@@ -385,7 +387,7 @@ export default function LinkedinOptimizer() {
                                                     )}
                                                 </button>
                                             </div>
-                                            <div className="p-3 rounded-lg bg-cyan-950/30 border border-cyan-500/30 text-xs font-mono text-cyan-200">
+                                            <div className="p-3 rounded-lg bg-emerald-950/30 border border-[#c4f82a]/30 text-xs font-mono text-emerald-200">
                                                 "{fix.optimized}"
                                             </div>
                                         </div>

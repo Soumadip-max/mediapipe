@@ -123,11 +123,11 @@ export default function AtsChecker() {
     return (
         <div className="w-full max-w-6xl mx-auto py-6 px-4 space-y-8">
             {/* Header Banner */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/20 p-6 md:p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-[#07090e] border border-[#c4f82a]/20 p-6 md:p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#c4f82a]/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#c4f82a]/10 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold">
                             <FileText className="w-3.5 h-3.5" />
                             <span>ATS Resume Match & Keyword Optimizer</span>
                         </div>
@@ -141,9 +141,9 @@ export default function AtsChecker() {
 
                     <button
                         onClick={loadSampleData}
-                        className="self-start md:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition-all flex items-center gap-2"
+                        className="self-start md:self-auto px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-[#c4f82a]/30 text-[#c4f82a] text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer"
                     >
-                        <Zap className="w-3.5 h-3.5 text-amber-400" />
+                        <Zap className="w-3.5 h-3.5 text-[#c4f82a]" />
                         <span>Load Sample Resume & JD</span>
                     </button>
                 </div>
@@ -155,10 +155,10 @@ export default function AtsChecker() {
                 <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-3">
                     <div className="flex items-center justify-between">
                         <label className="text-xs font-bold text-white flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-emerald-400" />
+                            <FileText className="w-4 h-4 text-[#c4f82a]" />
                             <span>Resume Text Content *</span>
                         </label>
-                        <label className="text-[11px] text-emerald-400 font-semibold cursor-pointer hover:underline flex items-center gap-1">
+                        <label className="text-[11px] text-[#c4f82a] font-semibold cursor-pointer hover:underline flex items-center gap-1">
                             <Upload className="w-3 h-3" />
                             <span>Upload File (.txt/.md)</span>
                             <input
@@ -175,11 +175,12 @@ export default function AtsChecker() {
                         onChange={(e) => setResumeText(e.target.value)}
                         placeholder="Paste your plain text resume content here..."
                         rows={10}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all resize-none"
+                        maxLength={20000}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#c4f82a]/60 focus:ring-1 focus:ring-[#c4f82a]/30 transition-all resize-none"
                     />
 
                     <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                        <span>{resumeText.length} Characters</span>
+                        <span>{resumeText.length} / 20,000 Characters</span>
                         {resumeText && (
                             <button
                                 onClick={() => setResumeText("")}
@@ -196,7 +197,7 @@ export default function AtsChecker() {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <label className="text-xs font-bold text-white flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-cyan-400" />
+                                <Sparkles className="w-4 h-4 text-[#c4f82a]" />
                                 <span>Target Job Description (Optional)</span>
                             </label>
                             <span className="text-[11px] text-slate-400 font-mono">For JD Matching</span>
@@ -207,7 +208,8 @@ export default function AtsChecker() {
                             onChange={(e) => setJobDescription(e.target.value)}
                             placeholder="Paste the job description (JD) you are applying for to check keyword overlap..."
                             rows={8}
-                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all resize-none"
+                            maxLength={10000}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#c4f82a]/60 focus:ring-1 focus:ring-[#c4f82a]/30 transition-all resize-none"
                         />
                     </div>
 
@@ -216,16 +218,16 @@ export default function AtsChecker() {
                         <button
                             onClick={handleAnalyze}
                             disabled={loading || !resumeText.trim()}
-                            className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 active:scale-95 text-slate-950 font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:pointer-events-none"
+                            className="w-full py-3.5 px-6 rounded-xl bg-[#c4f82a] hover:bg-[#b5eb1e] active:scale-95 text-[#07090e] font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#c4f82a]/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                         >
                             {loading ? (
                                 <>
-                                    <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                                    <Loader2 className="w-4 h-4 animate-spin text-[#07090e]" />
                                     <span>Evaluating ATS Match...</span>
                                 </>
                             ) : (
                                 <>
-                                    <TrendingUp className="w-4 h-4 text-slate-950" />
+                                    <TrendingUp className="w-4 h-4 text-[#07090e]" />
                                     <span>Analyze ATS Compatibility</span>
                                 </>
                             )}
@@ -263,13 +265,13 @@ export default function AtsChecker() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Overall ATS Match Score */}
                         <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 flex flex-col items-center justify-center text-center space-y-3 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4f82a]/10 rounded-full blur-2xl pointer-events-none" />
                             <span className="text-xs font-semibold text-slate-400 font-mono">
                                 OVERALL ATS MATCH SCORE
                             </span>
 
                             <div className="relative flex items-center justify-center">
-                                <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 font-mono">
+                                <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#c4f82a] to-emerald-300 font-mono">
                                     {result.matchScore}%
                                 </span>
                             </div>
@@ -289,12 +291,12 @@ export default function AtsChecker() {
 
                         {/* Formatting & Impact Score */}
                         <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 flex flex-col items-center justify-center text-center space-y-3 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#c4f82a]/10 rounded-full blur-2xl pointer-events-none" />
                             <span className="text-xs font-semibold text-slate-400 font-mono">
                                 FORMATTING & IMPACT SCORE
                             </span>
 
-                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-300 font-mono">
+                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#c4f82a] to-emerald-300 font-mono">
                                 {result.formattingScore}%
                             </span>
 
