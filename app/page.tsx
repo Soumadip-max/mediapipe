@@ -15,7 +15,7 @@ export default function Home() {
     const [activeJobSubTab, setActiveJobSubTab] = useState<JobSubTab>("mock-interview");
 
     return (
-        <KineticGrid className="min-h-screen text-slate-100 flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
+        <KineticGrid className="min-h-screen flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
             {/* Top Bar Navigation Header */}
             <TopNavbar
                 activeTab={activeTab}

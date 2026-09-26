@@ -1,18 +1,169 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-quicksand), 'Quicksand', system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-quicksand), 'Quicksand', system-ui, -apple-system, sans-serif;
+}
+
 :root {
   --background: #07090e;
   --foreground: #f8fafc;
   --neon-lime: #c4f82a;
+  color-scheme: dark;
 }
 
+html.light,
+[data-theme="light"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --neon-lime: #4d7c0f;
+  color-scheme: light;
+}
+
+html,
 body {
+  font-family: var(--font-quicksand), 'Quicksand', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Figma Typography Combo: Header: Quicksand Bold | Body Copy: Quicksand Regular */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-quicksand), 'Quicksand', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+p, span, button, input, textarea, select, a, li, label, div {
+  font-family: var(--font-quicksand), 'Quicksand', sans-serif;
+}
+
+/* =========================================================
+   LIGHT THEME GLOBAL OVERRIDES & COMPONENT STYLING
+   ========================================================= */
+
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Header & Navbars in Light Mode */
+html.light header {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .bg-\[\#090a0f\]\/80,
+html.light .bg-\[\#07090e\]\/95,
+html.light .bg-\[\#0b0e17\]\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Neutral Surfaces */
+html.light .bg-\[\#0f1422\],
+html.light .bg-\[\#0d111a\],
+html.light .bg-\[\#0c0e14\],
+html.light .bg-\[\#111319\],
+html.light .bg-\[\#191b22\],
+html.light .bg-\[\#1e1f26\],
+html.light .bg-\[\#1a1d26\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-\[\#282a30\] {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-slate-900,
+html.light .bg-slate-950 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-slate-800,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/40,
+html.light .bg-slate-800\/80 {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+/* Borders */
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-700,
+html.light .border-slate-700\/80,
+html.light .border-white\/10,
+html.light .border-white\/5,
+html.light .border-white\/15,
+html.light .border-\[\#444933\] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Text Hierarchy */
+html.light .text-\[\#e2e2eb\],
+html.light .text-slate-100,
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-\[\#c4c9ac\],
+html.light .text-slate-400,
+html.light .text-slate-300 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+/* Cards & Gradient Panels in Light Mode */
+html.light .bg-gradient-to-br.from-emerald-950\/70,
+html.light .bg-gradient-to-b.from-\[\#282a30\]\/95,
+html.light .bg-gradient-to-br.from-purple-950\/70 {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .bg-\[\#0c0e14\]\/90,
+html.light .bg-\[\#0c0e14\]\/60 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Inputs & Forms in Light Mode */
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* React Flow & Canvas Containers in Light Mode */
+html.light .react-flow {
+  background-color: #f8fafc !important;
+}
+
+html.light .react-flow__node {
+  color: #0f172a !important;
+}
+
+/* Animations */
 @keyframes pulseGlow {
   0%, 100% {
     box-shadow: 0 0 20px rgba(196, 248, 42, 0.25);
@@ -26,6 +177,7 @@ body {
   animation: pulseGlow 3s infinite ease-in-out;
 }
 
+/* Scrollbars */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -41,10 +193,19 @@ body {
   background: #475569;
 }
 
+html.light .custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+html.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 /* Hide Next.js dev indicators and floating overlay badges */
 nextjs-portal,
 [data-nextjs-toast],
 [data-nextjs-dev-overlay] {
   display: none !important;
 }
-

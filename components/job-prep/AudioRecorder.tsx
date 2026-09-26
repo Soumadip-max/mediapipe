@@ -122,9 +122,9 @@ export default function AudioRecorder({
                 <button
                     onClick={startRecording}
                     disabled={isProcessing || disabled}
-                    className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                    className="px-5 py-2.5 rounded-full bg-[#c3f400] hover:bg-[#abd600] active:scale-95 text-[#283500] font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(195,244,0,0.3)] disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                 >
-                    <span className="w-2.5 h-2.5 rounded-full bg-slate-950" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#283500]" />
                     {isProcessing ? "Transcribing with Whisper..." : "Start Answering"}
                 </button>
             ) : (

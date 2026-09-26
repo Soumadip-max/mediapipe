@@ -3,6 +3,29 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FilesetResolver, FaceLandmarker } from "@mediapipe/tasks-vision";
 import AudioRecorder from "@/components/job-prep/AudioRecorder";
+import {
+    Bot,
+    User,
+    Volume2,
+    RotateCcw,
+    Sparkles,
+    Mic,
+    Smile,
+    Activity,
+    Eye,
+    Zap,
+    CheckCircle2,
+    Award,
+    MessageSquare,
+    Play,
+    Radio,
+    TrendingUp,
+    Briefcase,
+    Sliders,
+    HelpCircle,
+    Copy,
+    Check
+} from "lucide-react";
 
 interface RoundRecord {
     round: number;
@@ -102,6 +125,7 @@ const getInitialQuestion = (role: TargetRole, level: ExperienceLevel) => {
 export default function FaceAnalyzer() {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const chatEndRef = useRef<HTMLDivElement | null>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [transcript, setTranscript] = useState<string>("");
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -119,6 +143,10 @@ export default function FaceAnalyzer() {
     const [roundsHistory, setRoundsHistory] = useState<RoundRecord[]>([]);
     const [isSessionFinished, setIsSessionFinished] = useState<boolean>(false);
     const [showSummaryModal, setShowSummaryModal] = useState<boolean>(false);
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [roundsHistory, currentRound, transcript, isAnalyzing]);
 
     // Handle Role & Level changes
     const handleRoleChange = (newRole: TargetRole) => {
@@ -522,350 +550,509 @@ export default function FaceAnalyzer() {
     }, []);
 
     return (
-        <div className="w-full max-w-[1360px] mx-auto pb-12 flex flex-col gap-6 text-[#e2e2eb] font-sans">
+        <div className="w-full max-w-[1520px] mx-auto pb-12 flex flex-col gap-6 text-[#e2e2eb] font-sans">
             
-            {/* 1. Main Studio Container */}
-            <div className="flex flex-col gap-6">
-                
-                {/* Studio Header Card & Role Setup */}
-                <div className="bg-[#191b22] rounded-2xl p-6 lg:p-8 border border-white/10 shadow-2xl relative overflow-hidden backdrop-blur-xl">
-                    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2.5 h-2.5 rounded-full bg-[#c3f400] shadow-[0_0_12px_#c3f400]" />
-                                <h1 className="text-2xl lg:text-3xl font-bold text-white tracking-tight">AI Interviewer Studio</h1>
-                            </div>
+            {/* 1. Studio Header Card & Role Setup */}
+            <div className="bg-[#0c0e14]/95 rounded-3xl p-5 sm:p-6 lg:p-7 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                    <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-2xl bg-[#c3f400]/10 border border-[#c3f400]/30 flex items-center justify-center text-[#c3f400] shadow-[0_0_15px_rgba(195,244,0,0.15)] shrink-0">
+                            <Bot className="w-5 h-5" />
                         </div>
-
-                        {/* Record / Submit CTA Button */}
-                        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                            <AudioRecorder
-                                onTranscriptionComplete={handleTranscriptionComplete}
-                                disabled={isAnalyzing || isSessionFinished}
-                            />
-                            {isSessionFinished && (
-                                <button
-                                    onClick={() => setShowSummaryModal(true)}
-                                    className="px-5 py-2.5 rounded-full bg-[#c3f400] text-[#283500] font-extrabold text-xs shadow-[0_0_20px_-4px_rgba(195,244,0,0.5)] hover:bg-[#abd600] transition-all cursor-pointer"
-                                >
-                                    📊 View Final Summary
-                                </button>
-                            )}
+                        <div>
+                            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                                Live Interview Vision
+                            </h1>
+                            <p className="text-xs text-[#c4c9ac] mt-0.5">
+                                Real-Time Computer Vision & Speech Intelligence Copilot
+                            </p>
                         </div>
                     </div>
 
-                    <p className="text-xs text-[#c4c9ac] pt-3">
-                        Real-Time Multimodal Computer Vision & Speech Intelligence Engine
-                    </p>
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                        <button
+                            onClick={restartInterview}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-[#c4c9ac] hover:text-white text-xs font-semibold border border-white/10 transition-colors cursor-pointer"
+                            title="Reset Interview Session"
+                        >
+                            <RotateCcw className="w-3.5 h-3.5 text-[#c3f400]" />
+                            <span>Restart</span>
+                        </button>
 
-                    {/* Configuration Bar: Role, Experience, Total Questions */}
-                    <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-[#c3f400]" />
-                                <span className="text-xs font-bold uppercase tracking-wider text-[#c4c9ac]">Interview Setup & Tuning</span>
-                            </div>
+                        {isSessionFinished && (
+                            <button
+                                onClick={() => setShowSummaryModal(true)}
+                                className="px-5 py-2 rounded-xl bg-[#c3f400] text-[#283500] font-extrabold text-xs shadow-[0_0_20px_rgba(195,244,0,0.4)] hover:bg-[#abd600] transition-all cursor-pointer flex items-center gap-1.5"
+                            >
+                                <Award className="w-4 h-4" />
+                                <span>View Performance Report</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
 
-                            {/* Target Role Dropdown */}
-                            <div className="relative inline-flex items-center bg-[#282a30] rounded-full px-4 py-1.5 border border-white/10 text-xs font-medium">
-                                <span className="material-symbols-outlined text-base text-[#c4c9ac] mr-1.5">work</span>
-                                <span className="text-[#c4c9ac] mr-1">Target Role:</span>
-                                <select
-                                    value={targetRole}
-                                    onChange={(e) => handleRoleChange(e.target.value as TargetRole)}
-                                    className="bg-transparent text-white font-bold focus:outline-none cursor-pointer pr-4 appearance-none text-xs border-0"
-                                >
-                                    {TARGET_ROLES.map((r) => (
-                                        <option key={r} value={r} className="bg-[#282a30] text-white">
-                                            {r}
-                                        </option>
-                                    ))}
-                                </select>
-                                <span className="material-symbols-outlined text-base text-[#c4c9ac] pointer-events-none -ml-3">expand_more</span>
-                            </div>
+                {/* Configuration Bar: Role, Experience, Total Questions & Progress */}
+                <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#c4c9ac]">
+                            <Sliders className="w-3.5 h-3.5 text-[#c3f400]" />
+                            <span>Setup:</span>
+                        </div>
 
-                            {/* Experience Level */}
-                            <div className="relative inline-flex items-center bg-[#282a30] rounded-full px-4 py-1.5 border border-white/10 text-xs font-medium">
-                                <span className="material-symbols-outlined text-base text-[#c4c9ac] mr-1.5">trending_up</span>
-                                <span className="text-[#c4c9ac] mr-1">Level:</span>
-                                <select
-                                    value={experienceLevel}
-                                    onChange={(e) => handleLevelChange(e.target.value as ExperienceLevel)}
-                                    className="bg-transparent text-white font-bold focus:outline-none cursor-pointer pr-4 appearance-none text-xs border-0"
-                                >
-                                    {EXPERIENCE_LEVELS.map((l) => (
-                                        <option key={l} value={l} className="bg-[#282a30] text-white">
-                                            {l}
-                                        </option>
-                                    ))}
-                                </select>
-                                <span className="material-symbols-outlined text-base text-[#c4c9ac] pointer-events-none -ml-3">expand_more</span>
-                            </div>
+                        {/* Target Role Dropdown */}
+                        <div className="relative inline-flex items-center bg-[#181a24] rounded-xl px-3.5 py-1.5 border border-white/10 text-xs font-medium">
+                            <Briefcase className="w-3.5 h-3.5 text-[#c3f400] mr-2" />
+                            <span className="text-[#c4c9ac] mr-1">Role:</span>
+                            <select
+                                value={targetRole}
+                                onChange={(e) => handleRoleChange(e.target.value as TargetRole)}
+                                className="bg-transparent text-white font-bold focus:outline-none cursor-pointer pr-4 appearance-none text-xs border-0"
+                            >
+                                {TARGET_ROLES.map((r) => (
+                                    <option key={r} value={r} className="bg-[#181a24] text-white">
+                                        {r}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Experience Level */}
+                        <div className="relative inline-flex items-center bg-[#181a24] rounded-xl px-3.5 py-1.5 border border-white/10 text-xs font-medium">
+                            <TrendingUp className="w-3.5 h-3.5 text-[#c3f400] mr-2" />
+                            <span className="text-[#c4c9ac] mr-1">Level:</span>
+                            <select
+                                value={experienceLevel}
+                                onChange={(e) => handleLevelChange(e.target.value as ExperienceLevel)}
+                                className="bg-transparent text-white font-bold focus:outline-none cursor-pointer pr-4 appearance-none text-xs border-0"
+                            >
+                                {EXPERIENCE_LEVELS.map((l) => (
+                                    <option key={l} value={l} className="bg-[#181a24] text-white">
+                                        {l}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* Total Questions Segmented Selector */}
-                        <div className="flex items-center gap-1 bg-[#0c0e14] px-2 py-1 rounded-full border border-white/10 text-xs">
-                            <span className="text-[#c4c9ac] px-2">Total:</span>
+                        <div className="flex items-center gap-1 bg-[#181a24] px-2 py-1 rounded-xl border border-white/10 text-xs">
+                            <span className="text-[#c4c9ac] px-1 text-[11px]">Questions:</span>
                             {[3, 4, 5].map((count) => (
                                 <button
                                     key={count}
                                     onClick={() => setTotalRounds(count)}
-                                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                                    className={`px-2.5 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                         totalRounds === count
-                                            ? "bg-[#c3f400] text-[#283500] shadow-sm"
+                                            ? "bg-[#c3f400] text-[#283500]"
                                             : "text-[#c4c9ac] hover:text-white"
                                     }`}
                                 >
-                                    {count} Qs
+                                    {count}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Round Progress Segmented Bar */}
-                    <div className="mt-4 pt-4 border-t border-white/10">
-                        <div className="flex items-center justify-between mb-2 text-xs">
-                            <div className="flex items-center gap-2">
-                                <span className="text-[#c3f400] font-bold uppercase tracking-wider">Round Progress:</span>
-                                <span className="text-white font-bold">Question {Math.min(currentRound, totalRounds)} of {totalRounds}</span>
-                            </div>
-                            <span className="text-[#c4c9ac]">{totalRounds - Math.min(currentRound, totalRounds) + (isSessionFinished ? 0 : 1)} round(s) remaining</span>
-                        </div>
-
-                        {/* Step Segments */}
-                        <div className="grid grid-cols-4 gap-2">
+                    {/* Compact Step Progress Indicator */}
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-white">
+                            Round <span className="text-[#c3f400]">{Math.min(currentRound, totalRounds)}</span> of {totalRounds}
+                        </span>
+                        <div className="flex items-center gap-1.5">
                             {Array.from({ length: totalRounds }).map((_, idx) => {
                                 const roundNum = idx + 1;
                                 const isCompleted = roundNum < currentRound || isSessionFinished;
                                 const isCurrent = roundNum === currentRound && !isSessionFinished;
 
                                 return (
-                                    <div key={idx} className="relative">
-                                        <div
-                                            className={`h-2 rounded-full transition-all duration-500 ${
-                                                isCompleted
-                                                    ? "bg-[#c3f400] shadow-[0_0_12px_rgba(195,244,0,0.6)]"
-                                                    : isCurrent
-                                                        ? "bg-[#abd600] animate-pulse"
-                                                        : "bg-[#33343b]"
-                                            }`}
-                                        />
-                                        <span className={`block mt-1 text-[10px] text-center font-mono font-bold ${
-                                            isCompleted || isCurrent ? "text-[#c3f400]" : "text-[#8e9379]"
-                                        }`}>
-                                            Q{roundNum} • {isCompleted ? "Completed" : isCurrent ? "Active" : "Pending"}
-                                        </span>
-                                    </div>
+                                    <div
+                                        key={idx}
+                                        className={`w-6 sm:w-8 h-2 rounded-full transition-all duration-300 ${
+                                            isCompleted
+                                                ? "bg-[#c3f400]"
+                                                : isCurrent
+                                                    ? "bg-[#c3f400]/60 animate-pulse"
+                                                    : "bg-white/10"
+                                        }`}
+                                        title={`Question ${roundNum} (${isCompleted ? "Completed" : isCurrent ? "Active" : "Pending"})`}
+                                    />
                                 );
                             })}
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* 2. Current Question AI Audio Prompt Card */}
-                <div className="rounded-2xl p-6 bg-gradient-to-r from-[#282a30] via-[#1e1f26] to-[#282a30] border border-white/10 shadow-lg relative overflow-hidden">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-[#c3f400]/20 flex items-center justify-center text-[#c3f400]">
-                                <span className="material-symbols-outlined text-lg">record_voice_over</span>
+            {/* 2. Main 2-Column Studio Grid: Left (Chat Studio) & Right (Vision & Telemetry) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* ── LEFT COLUMN: AI & Candidate Interview Chat Studio (Doubt Engine Template) ── */}
+                <div className="lg:col-span-7 xl:col-span-7 flex flex-col rounded-3xl bg-[#0c0e14]/95 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] backdrop-blur-2xl overflow-hidden min-h-[720px] lg:h-[780px]">
+                    
+                    {/* Chat Header */}
+                    <div className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-4 bg-[#090a0f]/60 shrink-0">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-[#c3f400]/10 border border-[#c3f400]/25 flex items-center justify-center text-[#c3f400] shrink-0">
+                                <MessageSquare className="w-4 h-4" />
                             </div>
-                            <span className="text-xs font-bold uppercase tracking-wider text-[#c3f400]">
-                                Current Question (Round {Math.min(currentRound, totalRounds)}):
-                            </span>
+                            <div>
+                                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
+                                    <span>Technical Interview Dialogue</span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono">
+                                        Round {Math.min(currentRound, totalRounds)} / {totalRounds}
+                                    </span>
+                                </h3>
+                                <p className="text-xs text-[#c4c9ac] line-clamp-1">
+                                    {targetRole} ({experienceLevel})
+                                </p>
+                            </div>
                         </div>
+
                         <button
                             onClick={() => speakQuestion(activeQuestion)}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-colors cursor-pointer shrink-0"
+                            title="Repeat AI Question via Speech Synthesis"
                         >
-                            <span className="material-symbols-outlined text-base text-[#c3f400]">volume_up</span>
-                            <span>Repeat Audio</span>
+                            <Volume2 className="w-3.5 h-3.5 text-[#c3f400]" />
+                            <span className="hidden sm:inline">Repeat Audio</span>
                         </button>
                     </div>
 
-                    <p className="text-lg font-bold text-white leading-snug tracking-tight">
-                        “{activeQuestion}”
-                    </p>
-
-                    {/* Simulated Voice Waveform Indicator */}
-                    <div className="mt-4 flex items-center gap-1">
-                        <span className="h-2 w-1 bg-[#c3f400] rounded-full animate-pulse" />
-                        <span className="h-4 w-1 bg-[#c3f400] rounded-full animate-pulse delay-75" />
-                        <span className="h-6 w-1 bg-[#c3f400] rounded-full animate-pulse delay-150" />
-                        <span className="h-3 w-1 bg-[#c3f400] rounded-full animate-pulse" />
-                        <span className="h-5 w-1 bg-[#c3f400] rounded-full animate-pulse delay-200" />
-                        <span className="h-2 w-1 bg-[#c3f400] rounded-full animate-pulse delay-100" />
-                        <span className="text-[10px] text-[#c4c9ac] ml-2 uppercase font-bold tracking-wider">AI Synthesized Voice Prompt Active</span>
-                    </div>
-                </div>
-
-                {/* 3. Live Computer Vision Feed Stage & Real-Time Biometric HUD */}
-                <div className="relative w-full rounded-2xl bg-[#0c0e14] border border-white/10 overflow-hidden shadow-2xl">
-                    <div className="relative w-full aspect-video min-h-[460px] lg:min-h-[560px] bg-[#0a0c12] flex items-center justify-center overflow-hidden">
+                    {/* Scrollable Chat Feed Area */}
+                    <div className="flex-1 p-5 sm:p-6 overflow-y-auto space-y-6 custom-scrollbar">
                         
-                        {/* Live Webcam Video Feed */}
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            muted
-                            className="absolute inset-0 w-full h-full object-cover -scale-x-100"
-                        />
+                        {/* Initial Greeting / Orientation Message */}
+                        <div className="flex gap-3.5 w-full justify-start">
+                            <div className="w-8 h-8 rounded-xl bg-[#c3f400]/10 border border-[#c3f400]/30 flex items-center justify-center text-[#c3f400] shrink-0 mt-1">
+                                <Bot className="w-4 h-4" />
+                            </div>
+                            <div className="bg-[#181a24] text-white rounded-2xl rounded-tl-none border border-white/10 p-4 max-w-[92%] shadow-md">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <span className="text-xs font-bold text-[#c3f400]">Zenith AI Interviewer</span>
+                                    <span className="text-[10px] text-[#c4c9ac] font-mono">• Session Initialized</span>
+                                </div>
+                                <p className="text-sm leading-relaxed text-slate-200">
+                                    Welcome! I will be conducting your technical interview for the <strong className="text-white">{targetRole}</strong> position. Answer each prompt verbally using your microphone. I will evaluate your technical clarity, architecture depth, and real-time biometrics.
+                                </p>
+                            </div>
+                        </div>
 
-                        {/* MediaPipe Face Landmarker Landmark Canvas Overlay */}
-                        <canvas
-                            ref={canvasRef}
-                            className="absolute inset-0 w-full h-full object-cover -scale-x-100 pointer-events-none"
-                        />
+                        {/* 1. Historical Rounds (Question -> User Transcript -> AI Feedback) */}
+                        {roundsHistory.map((rec) => (
+                            <div key={rec.round} className="space-y-4 pt-2 border-t border-white/5">
+                                
+                                {/* AI Round Question */}
+                                <div className="flex gap-3.5 w-full justify-start">
+                                    <div className="w-8 h-8 rounded-xl bg-[#c3f400]/10 border border-[#c3f400]/30 flex items-center justify-center text-[#c3f400] shrink-0 mt-1">
+                                        <Bot className="w-4 h-4" />
+                                    </div>
+                                    <div className="bg-[#181a24] text-white rounded-2xl rounded-tl-none border border-white/10 p-4 max-w-[92%] shadow-md">
+                                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                                            <span className="text-xs font-bold text-[#c3f400]">Question {rec.round}</span>
+                                            <button
+                                                onClick={() => speakQuestion(rec.question)}
+                                                className="text-[#c4c9ac] hover:text-white text-xs flex items-center gap-1 cursor-pointer"
+                                                title="Play Question"
+                                            >
+                                                <Volume2 className="w-3 h-3 text-[#c3f400]" />
+                                                <span className="text-[10px]">Play</span>
+                                            </button>
+                                        </div>
+                                        <p className="text-sm font-semibold text-white leading-relaxed">
+                                            “{rec.question}”
+                                        </p>
+                                    </div>
+                                </div>
 
-                        {!isLoaded && (
-                            <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-[#c4c9ac]">
-                                <span className="material-symbols-outlined text-2xl text-[#c3f400] animate-spin mr-2">sync</span>
-                                Initializing AI Computer Vision Face Landmark Engine...
+                                {/* User Spoken Transcript */}
+                                <div className="flex gap-3.5 w-full justify-end">
+                                    <div className="bg-[#c3f400] text-[#191b22] rounded-2xl rounded-tr-none p-4 max-w-[92%] shadow-[0_4px_20px_rgba(195,244,0,0.15)]">
+                                        <div className="flex items-center justify-between gap-3 mb-1.5 border-b border-[#191b22]/15 pb-1">
+                                            <span className="text-xs font-black text-[#191b22] uppercase tracking-wider">Your Spoken Answer</span>
+                                            <span className="text-[10px] font-mono text-[#191b22]/80">Whisper v3 Turbo</span>
+                                        </div>
+                                        <p className="text-sm font-medium leading-relaxed">
+                                            "{rec.transcript}"
+                                        </p>
+                                        
+                                        {/* Audio & Speech Delivery Badges */}
+                                        <div className="mt-3 pt-2 border-t border-[#191b22]/15 flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#191b22]/90">
+                                            <span className="px-2 py-0.5 rounded-md bg-black/10">
+                                                ⚡ {rec.wpm} WPM ({rec.pacingStatus})
+                                            </span>
+                                            <span className="px-2 py-0.5 rounded-md bg-black/10">
+                                                🎯 {rec.fillerCount} Fillers
+                                            </span>
+                                            <span className="px-2 py-0.5 rounded-md bg-black/10">
+                                                🧠 {rec.composureScore}% Composure
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0 mt-1 font-bold text-xs">
+                                        <User className="w-4 h-4" />
+                                    </div>
+                                </div>
+
+                                {/* AI Evaluation Feedback Card */}
+                                <div className="pl-11 pr-2">
+                                    <div className="rounded-2xl p-4 bg-[#12141d] border border-white/10 text-xs">
+                                        <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-white/10">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                                                    <CheckCircle2 className="w-3.5 h-3.5 text-[#c3f400]" />
+                                                    Round {rec.round} Evaluation
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="px-2.5 py-0.5 rounded-full bg-[#c3f400]/20 text-[#c3f400] font-black text-xs border border-[#c3f400]/30">
+                                                    Score: {rec.score}/100
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="text-slate-300 leading-relaxed">
+                                            {rec.feedback}
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        ))}
+
+                        {/* 2. Active Current Round AI Question */}
+                        {!isSessionFinished && (
+                            <div className="space-y-4 pt-2">
+                                <div className="flex gap-3.5 w-full justify-start">
+                                    <div className="w-8 h-8 rounded-xl bg-[#c3f400]/20 border border-[#c3f400]/40 flex items-center justify-center text-[#c3f400] shrink-0 mt-1 shadow-[0_0_15px_rgba(195,244,0,0.2)]">
+                                        <Bot className="w-4 h-4" />
+                                    </div>
+                                    <div className="bg-gradient-to-r from-[#181a24] to-[#1e202d] text-white rounded-2xl rounded-tl-none border border-[#c3f400]/30 p-5 max-w-[92%] shadow-lg relative overflow-hidden">
+                                        <div className="flex items-center justify-between gap-2 mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-black text-[#c3f400] uppercase tracking-wider">
+                                                    Current Question (Round {Math.min(currentRound, totalRounds)}):
+                                                </span>
+                                                <span className="w-2 h-2 rounded-full bg-[#c3f400] animate-ping" />
+                                            </div>
+                                            <button
+                                                onClick={() => speakQuestion(activeQuestion)}
+                                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-colors cursor-pointer"
+                                            >
+                                                <Volume2 className="w-3 h-3 text-[#c3f400]" />
+                                                <span>Repeat</span>
+                                            </button>
+                                        </div>
+
+                                        <p className="text-base font-bold text-white leading-relaxed tracking-tight">
+                                            “{activeQuestion}”
+                                        </p>
+
+                                        {/* Synthesized Voice indicator */}
+                                        <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center gap-1">
+                                            <span className="h-2 w-1 bg-[#c3f400] rounded-full animate-pulse" />
+                                            <span className="h-4 w-1 bg-[#c3f400] rounded-full animate-pulse delay-75" />
+                                            <span className="h-6 w-1 bg-[#c3f400] rounded-full animate-pulse delay-150" />
+                                            <span className="h-3 w-1 bg-[#c3f400] rounded-full animate-pulse" />
+                                            <span className="h-5 w-1 bg-[#c3f400] rounded-full animate-pulse delay-200" />
+                                            <span className="text-[10px] text-[#c4c9ac] ml-2 uppercase font-bold tracking-wider">
+                                                Ready for your verbal answer
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Loading Evaluator state */}
+                                {isAnalyzing && (
+                                    <div className="flex items-center gap-3 text-xs sm:text-sm text-[#c3f400] font-semibold p-3.5 rounded-2xl bg-[#181a24] border border-[#c3f400]/30 w-fit ml-11 animate-pulse">
+                                        <Bot className="w-4 h-4 animate-spin" />
+                                        <span>Zenith AI Evaluator is analyzing your technical response and biometrics...</span>
+                                    </div>
+                                )}
                             </div>
                         )}
 
-                        {/* TOP HUD FLOATING BADGES */}
-                        <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                            <div className="flex items-center gap-2 pointer-events-auto">
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white text-xs font-semibold">
-                                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                                    <span>REC 00:03:42</span>
-                                </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-[#c3f400]/40 text-[#c3f400] text-xs font-bold">
-                                    <span className="material-symbols-outlined text-sm">visibility</span>
-                                    <span>Eye Contact: {emotionState.eyeContact}</span>
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-2 pointer-events-auto">
-                                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white text-xs font-semibold">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#c3f400]" />
-                                    <span>{targetRole} • {experienceLevel}</span>
-                                </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[#c4c9ac] text-xs font-semibold">
-                                    <span className="material-symbols-outlined text-sm text-[#c3f400]">center_focus_strong</span>
-                                    <span>Calibrated</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Mic Level Equalizer Floating bottom right */}
-                        <div className="absolute bottom-24 right-4 hidden md:flex items-end gap-1 px-3 py-2 rounded-xl bg-black/75 backdrop-blur-md border border-white/10 pointer-events-none">
-                            <span className="text-[10px] text-[#c4c9ac] mr-1 uppercase font-bold">Mic Level</span>
-                            <span className="w-1 h-3 bg-[#c3f400] rounded-full animate-bounce" />
-                            <span className="w-1 h-6 bg-[#c3f400] rounded-full animate-bounce delay-75" />
-                            <span className="w-1 h-8 bg-[#c3f400] rounded-full animate-bounce delay-150" />
-                            <span className="w-1 h-4 bg-[#c3f400] rounded-full animate-bounce delay-100" />
-                        </div>
-
-                        {/* BOTTOM HUD OVERLAY: Live Answer Transcript Banner */}
-                        <div className="absolute bottom-4 inset-x-4 p-4 rounded-xl bg-[#0c0e14]/90 backdrop-blur-md border border-white/10">
-                            <div className="flex items-center justify-between gap-2 mb-1">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-[#c3f400] animate-ping" />
-                                    <span className="text-[11px] font-bold uppercase text-[#c3f400] tracking-wider">Your Answer Transcript (Live Speech-To-Text):</span>
+                        {/* Session Finished Card */}
+                        {isSessionFinished && (
+                            <div className="rounded-2xl p-6 bg-gradient-to-r from-[#141620] to-[#1e202d] border border-[#c3f400]/40 text-center flex flex-col items-center gap-3 my-4 shadow-xl">
+                                <div className="w-12 h-12 rounded-2xl bg-[#c3f400]/20 text-[#c3f400] flex items-center justify-center border border-[#c3f400]/30 shadow-[0_0_20px_rgba(195,244,0,0.2)]">
+                                    <Award className="w-6 h-6" />
                                 </div>
-                                <span className="text-[10px] text-[#c4c9ac]">Whisper v3 Turbo</span>
+                                <h3 className="text-lg font-bold text-white">Interview Complete!</h3>
+                                <p className="text-xs text-slate-300 max-w-md">
+                                    You have completed all {totalRounds} technical rounds. Review your performance breakdown and AI insights.
+                                </p>
+                                <button
+                                    onClick={() => setShowSummaryModal(true)}
+                                    className="px-6 py-2.5 rounded-xl bg-[#c3f400] text-[#283500] font-bold text-xs hover:bg-[#abd600] transition-all cursor-pointer shadow-[0_0_20px_rgba(195,244,0,0.4)]"
+                                >
+                                    📊 Open Full Summary Report
+                                </button>
                             </div>
-                            <p className="text-xs sm:text-sm text-white italic font-mono transition-all">
-                                {transcript ? `"${transcript}"` : "Click 'Start Answering', speak your response clearly into your microphone, then click 'Stop & Submit'..."}
-                            </p>
+                        )}
+
+                        <div ref={chatEndRef} />
+                    </div>
+
+                    {/* Chat Bottom Audio Recorder & Live Transcription Composer Bar */}
+                    <div className="p-4 sm:p-5 bg-[#090a0f]/80 border-t border-white/10 shrink-0">
+                        <div className="rounded-2xl bg-[#090b10] border border-white/15 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-inner">
+                            
+                            {/* Live transcript feedback indicator */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="w-2 h-2 rounded-full bg-[#c3f400] animate-ping" />
+                                    <span className="text-[11px] font-bold text-[#c3f400] uppercase tracking-wider">
+                                        Voice Input (Whisper v3 Turbo):
+                                    </span>
+                                </div>
+                                <p className="text-xs text-slate-300 italic truncate">
+                                    {transcript ? `"${transcript}"` : "Click 'Start Answering', speak your response, then click 'Stop & Submit'"}
+                                </p>
+                            </div>
+
+                            {/* Audio Recorder Action CTA */}
+                            <div className="shrink-0 self-end sm:self-center">
+                                <AudioRecorder
+                                    onTranscriptionComplete={handleTranscriptionComplete}
+                                    disabled={isAnalyzing || isSessionFinished}
+                                />
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                {/* 4. Real-Time Biometric & Speech Intelligence Telemetry Bar */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    {/* Emotion */}
-                    <div className="bg-[#191b22] rounded-xl p-4 border border-white/5 flex flex-col justify-between hover:border-[#c3f400]/30 transition-all">
-                        <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            <span>Detected Emotion</span>
-                            <span className="material-symbols-outlined text-base text-[#c3f400]">sentiment_satisfied</span>
-                        </div>
-                        <span className="text-base font-bold text-[#c3f400] truncate">{emotionState.emotion}</span>
-                        <span className="text-[11px] text-[#c4c9ac] mt-1 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#c3f400]" /> 94% Confidence
-                        </span>
-                    </div>
+                {/* ── RIGHT COLUMN: Computer Vision Screen & Detection Telemetry Cards (Bottom) ── */}
+                <div className="lg:col-span-5 xl:col-span-5 flex flex-col gap-5">
+                    
+                    {/* 1. Live Computer Vision Camera Feed & MediaPipe Face Mesh */}
+                    <div className="relative w-full rounded-3xl bg-[#0c0e14]/95 border border-white/10 overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] backdrop-blur-2xl">
+                        
+                        <div className="relative w-full aspect-[4/3] bg-[#07080c] flex items-center justify-center overflow-hidden">
+                            {/* Live Webcam Video Feed */}
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                playsInline
+                                muted
+                                className="absolute inset-0 w-full h-full object-cover -scale-x-100"
+                            />
 
-                    {/* Composure */}
-                    <div className="bg-[#191b22] rounded-xl p-4 border border-white/5 flex flex-col justify-between hover:border-[#c3f400]/30 transition-all">
-                        <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            <span>Composure Score</span>
-                            <span className="material-symbols-outlined text-base text-[#ffb2ba]">psychology</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-xl font-bold text-white">{emotionState.confidenceScore}%</span>
-                            <span className="text-[10px] text-[#c3f400] font-bold">↑ Optimal</span>
-                        </div>
-                        <div className="w-full bg-[#33343b] h-1 rounded-full overflow-hidden mt-2">
-                            <div className="bg-[#c3f400] h-full rounded-full" style={{ width: `${emotionState.confidenceScore}%` }} />
-                        </div>
-                    </div>
+                            {/* MediaPipe Face Landmarker Landmark Canvas Overlay */}
+                            <canvas
+                                ref={canvasRef}
+                                className="absolute inset-0 w-full h-full object-cover -scale-x-100 pointer-events-none"
+                            />
 
-                    {/* Pacing */}
-                    <div className="bg-[#191b22] rounded-xl p-4 border border-white/5 flex flex-col justify-between hover:border-[#c3f400]/30 transition-all">
-                        <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            <span>Speech Pacing</span>
-                            <span className="material-symbols-outlined text-base text-[#c3f400]">speed</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-xl font-bold text-white">{pacing ? pacing.wpm : 138}</span>
-                            <span className="text-xs text-[#c4c9ac]">WPM</span>
-                        </div>
-                        <span className="text-[11px] text-[#c3f400] font-semibold mt-1">Recommended (130-150)</span>
-                    </div>
+                            {!isLoaded && (
+                                <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-[#c4c9ac] p-4 text-center">
+                                    <span className="material-symbols-outlined text-xl text-[#c3f400] animate-spin mr-2">sync</span>
+                                    Initializing Computer Vision Face Mesh Engine...
+                                </div>
+                            )}
 
-                    {/* Filler Words */}
-                    <div className="bg-[#191b22] rounded-xl p-4 border border-white/5 flex flex-col justify-between hover:border-[#c3f400]/30 transition-all">
-                        <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            <span>Filler Words</span>
-                            <span className="material-symbols-outlined text-base text-[#c4c9ac]">record_voice_over</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-xl font-bold text-white">{fillerAnalysis ? fillerAnalysis.count : 0}</span>
-                            <span className="text-xs text-[#c4c9ac]">detected</span>
-                        </div>
-                        <span className="text-[11px] text-[#c3f400] font-semibold mt-1">Exceptional clarity</span>
-                    </div>
+                            {/* Floating Top HUD Badges */}
+                            <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
+                                <div className="flex items-center gap-2 pointer-events-auto">
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-white text-[11px] font-semibold">
+                                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                        <span>REC</span>
+                                    </span>
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-[#c3f400]/40 text-[#c3f400] text-[11px] font-bold">
+                                        <Eye className="w-3 h-3 text-[#c3f400]" />
+                                        <span>{emotionState.eyeContact}</span>
+                                    </span>
+                                </div>
 
-                    {/* Eye Contact Ratio */}
-                    <div className="col-span-2 md:col-span-1 bg-[#191b22] rounded-xl p-4 border border-white/5 flex flex-col justify-between hover:border-[#c3f400]/30 transition-all">
-                        <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            <span>Eye Contact</span>
-                            <span className="material-symbols-outlined text-base text-[#c3f400]">visibility</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-base font-bold text-[#c3f400]">{emotionState.eyeContact}</span>
-                        </div>
-                        <span className="text-[11px] text-[#c4c9ac] mt-1">Head tilt locked</span>
-                    </div>
-                </div>
-
-                {/* 5. Real-Time AI Coaching & Actionable Insights Drawer */}
-                <div className="rounded-2xl p-6 bg-[#191b22] border border-white/5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[#d4004b]/20 flex items-center justify-center text-[#ffb2ba] shrink-0 mt-0.5">
-                            <span className="material-symbols-outlined text-xl">tips_and_updates</span>
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-[#ffb2ba] uppercase tracking-wider">Real-Time Coach Hint:</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#d4004b]" />
-                                <span className="text-xs text-[#c4c9ac]">Live System Analysis</span>
+                                <div className="flex items-center gap-1.5 pointer-events-auto">
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[#c4c9ac] text-[11px] font-semibold">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#c3f400]" />
+                                        <span>Calibrated</span>
+                                    </span>
+                                </div>
                             </div>
-                            <p className="text-sm text-white mt-1 leading-relaxed">
-                                {aiResponse?.feedback || "“Great technical depth with the Go microservices architecture. Remember to highlight the quantitative business outcome — for instance, cloud infrastructure cost savings or transaction throughput increase under heavy load.”"}
-                            </p>
+
+                            {/* Mic Level Equalizer Floating bottom right */}
+                            <div className="absolute bottom-3.5 right-3.5 flex items-end gap-1 px-2.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 pointer-events-none">
+                                <span className="text-[9px] text-[#c4c9ac] mr-1 uppercase font-bold">Mic</span>
+                                <span className="w-1 h-2.5 bg-[#c3f400] rounded-full animate-bounce" />
+                                <span className="w-1 h-5 bg-[#c3f400] rounded-full animate-bounce delay-75" />
+                                <span className="w-1 h-6 bg-[#c3f400] rounded-full animate-bounce delay-150" />
+                                <span className="w-1 h-3 bg-[#c3f400] rounded-full animate-bounce delay-100" />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0 self-end lg:self-center">
-                        <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white font-semibold text-xs border border-white/10 transition-colors cursor-pointer">
-                            <span className="material-symbols-outlined text-base">bookmark_add</span>
-                            <span>Bookmark Tip</span>
-                        </button>
+                    {/* 2. Real-Time Detection Telemetry Cards (At the bottom of the Vision Screen) */}
+                    <div className="grid grid-cols-2 gap-3">
+                        
+                        {/* Detected Emotion */}
+                        <div className="bg-[#0c0e14]/95 rounded-2xl p-4 border border-white/10 hover:border-[#c3f400]/40 transition-all shadow-md">
+                            <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
+                                <span>Detected Emotion</span>
+                                <Smile className="w-4 h-4 text-[#c3f400]" />
+                            </div>
+                            <span className="text-sm font-bold text-[#c3f400] truncate block">{emotionState.emotion}</span>
+                            <span className="text-[10px] text-[#c4c9ac] mt-1 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#c3f400]" /> 94% Confidence
+                            </span>
+                        </div>
+
+                        {/* Composure Score */}
+                        <div className="bg-[#0c0e14]/95 rounded-2xl p-4 border border-white/10 hover:border-[#c3f400]/40 transition-all shadow-md">
+                            <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
+                                <span>Composure Score</span>
+                                <Activity className="w-4 h-4 text-[#c3f400]" />
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-lg font-bold text-white">{emotionState.confidenceScore}%</span>
+                                <span className="text-[10px] text-[#c3f400] font-bold">↑ Optimal</span>
+                            </div>
+                            <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden mt-2">
+                                <div className="bg-[#c3f400] h-full rounded-full" style={{ width: `${emotionState.confidenceScore}%` }} />
+                            </div>
+                        </div>
+
+                        {/* Speech Pacing */}
+                        <div className="bg-[#0c0e14]/95 rounded-2xl p-4 border border-white/10 hover:border-[#c3f400]/40 transition-all shadow-md">
+                            <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
+                                <span>Speech Pacing</span>
+                                <Zap className="w-4 h-4 text-[#c3f400]" />
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-lg font-bold text-white">{pacing ? pacing.wpm : 138}</span>
+                                <span className="text-[11px] text-[#c4c9ac]">WPM</span>
+                            </div>
+                            <span className="text-[10px] text-[#c3f400] font-semibold mt-1 block truncate">Recommended (130-150)</span>
+                        </div>
+
+                        {/* Filler Words */}
+                        <div className="bg-[#0c0e14]/95 rounded-2xl p-4 border border-white/10 hover:border-[#c3f400]/40 transition-all shadow-md">
+                            <div className="flex items-center justify-between text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
+                                <span>Filler Words</span>
+                                <Mic className="w-4 h-4 text-[#c3f400]" />
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-lg font-bold text-white">{fillerAnalysis ? fillerAnalysis.count : 0}</span>
+                                <span className="text-[11px] text-[#c4c9ac]">detected</span>
+                            </div>
+                            <span className="text-[10px] text-[#c3f400] font-semibold mt-1 block truncate">Exceptional clarity</span>
+                        </div>
+
+                        {/* Eye Contact */}
+                        <div className="col-span-2 bg-[#0c0e14]/95 rounded-2xl p-4 border border-white/10 hover:border-[#c3f400]/40 transition-all shadow-md flex items-center justify-between">
+                            <div>
+                                <div className="flex items-center gap-1.5 text-[#c4c9ac] text-[10px] font-bold uppercase tracking-wider mb-1">
+                                    <Eye className="w-3.5 h-3.5 text-[#c3f400]" />
+                                    <span>Eye Contact Engagement</span>
+                                </div>
+                                <span className="text-base font-bold text-[#c3f400]">{emotionState.eyeContact}</span>
+                            </div>
+                            <span className="text-[11px] text-slate-400 bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">
+                                Head tilt locked
+                            </span>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -873,7 +1060,7 @@ export default function FaceAnalyzer() {
             {/* Summary Modal */}
             {showSummaryModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <div className="bg-[#191b22] border border-white/10 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 flex flex-col gap-6 text-white">
+                    <div className="bg-[#0c0e14] border border-white/15 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 flex flex-col gap-6 text-white">
                         <div className="flex items-start justify-between border-b border-white/10 pb-4">
                             <div>
                                 <h2 className="text-2xl font-black text-white">Interview Performance Summary</h2>
@@ -881,35 +1068,59 @@ export default function FaceAnalyzer() {
                             </div>
                             <button
                                 onClick={() => setShowSummaryModal(false)}
-                                className="text-[#c4c9ac] hover:text-white px-3 py-1.5 rounded-lg bg-[#282a30] text-xs font-bold"
+                                className="text-[#c4c9ac] hover:text-white px-3 py-1.5 rounded-xl bg-white/10 text-xs font-bold transition-colors cursor-pointer"
                             >
                                 ✕ Close
                             </button>
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                            <div className="bg-[#0c0e14] p-4 rounded-xl border border-white/5">
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
                                 <div className="text-xs text-[#c4c9ac] uppercase font-bold">Avg Tech Score</div>
                                 <div className="text-3xl font-extrabold text-[#c3f400] mt-1">{avgTechScore}/100</div>
                             </div>
-                            <div className="bg-[#0c0e14] p-4 rounded-xl border border-white/5">
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
                                 <div className="text-xs text-[#c4c9ac] uppercase font-bold">Avg Composure</div>
-                                <div className="text-3xl font-extrabold text-cyan-400 mt-1">{avgComposureScore}%</div>
+                                <div className="text-3xl font-extrabold text-white mt-1">{avgComposureScore}%</div>
                             </div>
-                            <div className="bg-[#0c0e14] p-4 rounded-xl border border-white/5">
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
                                 <div className="text-xs text-[#c4c9ac] uppercase font-bold">Avg Pacing</div>
-                                <div className="text-3xl font-extrabold text-amber-400 mt-1">{avgWpm || 138} WPM</div>
+                                <div className="text-3xl font-extrabold text-[#c3f400] mt-1">{avgWpm || 138} WPM</div>
                             </div>
-                            <div className="bg-[#0c0e14] p-4 rounded-xl border border-white/5">
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
                                 <div className="text-xs text-[#c4c9ac] uppercase font-bold">Eye Contact</div>
                                 <div className="text-3xl font-extrabold text-emerald-400 mt-1">{eyeContactPercent}%</div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-2">
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
+                                <h4 className="text-xs font-bold text-[#c3f400] uppercase tracking-wider mb-2">Key Strengths</h4>
+                                <ul className="space-y-1 text-xs text-slate-300">
+                                    {insights.strengths.map((s, i) => (
+                                        <li key={i} className="flex items-center gap-2">
+                                            <span className="text-[#c3f400]">✓</span> {s}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="bg-[#181a24] p-4 rounded-2xl border border-white/10">
+                                <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Areas for Improvement</h4>
+                                <ul className="space-y-1 text-xs text-slate-300">
+                                    {insights.improvements.map((imp, i) => (
+                                        <li key={i} className="flex items-center gap-2">
+                                            <span className="text-amber-400">→</span> {imp}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
 
                         <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
                             <button
                                 onClick={restartInterview}
-                                className="px-6 py-2.5 rounded-full bg-[#c3f400] text-[#283500] font-bold text-xs hover:bg-[#abd600] transition-all cursor-pointer"
+                                className="px-6 py-2.5 rounded-full bg-[#c3f400] text-[#283500] font-bold text-xs hover:bg-[#abd600] transition-all cursor-pointer shadow-[0_0_20px_rgba(195,244,0,0.3)]"
                             >
                                 🔄 Restart New Interview
                             </button>

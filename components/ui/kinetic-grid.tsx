@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,7 +27,8 @@ const MAX_WARP = 24;
 const DOT_SPACING = 28;
 const LERP_SPEED = 0.08;
 
-const LINE_BASE = { r: 255, g: 255, b: 255, a: 0.13 };
+const LINE_BASE_DARK = { r: 255, g: 255, b: 255, a: 0.13 };
+const LINE_BASE_LIGHT = { r: 15, g: 23, b: 42, a: 0.08 };
 const NODE_BASE_RADIUS = 1.8;
 const NODE_ACTIVE_RADIUS = 3.2;
 
@@ -59,6 +61,14 @@ export default function KineticGrid({
   className?: string;
   globalColor?: "default" | "monochrome";
 }) {
+  let themeContext: { theme: "dark" | "light" } | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    themeContext = useTheme();
+  } catch {
+    themeContext = { theme: "dark" };
+  }
+  const isLight = themeContext?.theme === "light";
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const mouseRef = useRef<Point>({ x: -9999, y: -9999 });
@@ -152,22 +162,33 @@ export default function KineticGrid({
       const mouse = mouseRef.current;
       const ripples = ripplesRef.current;
 
-      const theme = {
-        default: {
-          bg: "#090a0f",
-          lineActive: { r: 196, g: 248, b: 42, a: 0.9 },
-          nodeActive: { r: 196, g: 248, b: 42, a: 1.0 },
-          glow: "196,248,42",
-          ripple: "196,248,42",
-        },
-        monochrome: {
-          bg: "#000000",
-          lineActive: { r: 255, g: 255, b: 255, a: 0.9 },
-          nodeActive: { r: 255, g: 255, b: 255, a: 1.0 },
-          glow: "255,255,255",
-          ripple: "255,255,255",
-        },
-      }[globalColor ?? "default"];
+      const theme = isLight
+        ? {
+            bg: "#f8fafc",
+            lineBase: LINE_BASE_LIGHT,
+            lineActive: { r: 16, g: 185, b: 129, a: 0.9 },
+            nodeBase: { r: 15, g: 23, b: 42, a: 0.15 },
+            nodeActive: { r: 16, g: 185, b: 129, a: 1.0 },
+            glow: "16,185,129",
+            ripple: "16,185,129",
+            dots: "rgba(15, 23, 42, 0.05)",
+          }
+        : {
+            bg: globalColor === "monochrome" ? "#000000" : "#090a0f",
+            lineBase: LINE_BASE_DARK,
+            lineActive:
+              globalColor === "monochrome"
+                ? { r: 255, g: 255, b: 255, a: 0.9 }
+                : { r: 196, g: 248, b: 42, a: 0.9 },
+            nodeBase: { r: 255, g: 255, b: 255, a: 0.2 },
+            nodeActive:
+              globalColor === "monochrome"
+                ? { r: 255, g: 255, b: 255, a: 1.0 }
+                : { r: 196, g: 248, b: 42, a: 1.0 },
+            glow: globalColor === "monochrome" ? "255,255,255" : "196,248,42",
+            ripple: globalColor === "monochrome" ? "255,255,255" : "196,248,42",
+            dots: "rgba(255,255,255,0.05)",
+          };
 
       ctx.clearRect(0, 0, W, H);
 
@@ -176,7 +197,7 @@ export default function KineticGrid({
       ctx.fillRect(0, 0, W, H);
 
       // Static background dot texture
-      ctx.fillStyle = "rgba(255,255,255,0.05)";
+      ctx.fillStyle = theme.dots;
       for (let x = DOT_SPACING / 2; x < W; x += DOT_SPACING) {
         for (let y = DOT_SPACING / 2; y < H; y += DOT_SPACING) {
           ctx.beginPath();
@@ -230,7 +251,7 @@ export default function KineticGrid({
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = lerpColor(LINE_BASE, theme.lineActive, t);
+        ctx.strokeStyle = lerpColor(theme.lineBase, theme.lineActive, t);
         ctx.lineWidth = lerpN(0.8, 1.5, t);
         ctx.stroke();
       };
@@ -305,7 +326,7 @@ export default function KineticGrid({
         ctx.stroke();
       }
     },
-    [getWarpedPoint, globalColor],
+    [getWarpedPoint, globalColor, isLight],
   );
 
   // ── Animation loop ──────────────────────────────────────────────────────────
@@ -378,8 +399,12 @@ export default function KineticGrid({
   return (
     <div
       className={cn(
-        "relative w-full min-h-screen overflow-hidden",
-        globalColor === "monochrome" ? "bg-[#000000]" : "bg-[#090a0f]",
+        "relative w-full min-h-screen overflow-hidden transition-colors duration-300",
+        isLight
+          ? "bg-[#f8fafc] text-slate-900"
+          : globalColor === "monochrome"
+          ? "bg-[#000000] text-slate-100"
+          : "bg-[#090a0f] text-slate-100",
         className,
       )}
     >

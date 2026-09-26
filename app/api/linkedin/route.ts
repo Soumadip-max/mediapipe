@@ -64,28 +64,32 @@ export async function POST(req: Request) {
       - "contentFixes" should provide 2 to 4 section-by-section before-and-after rewrites.
     `;
 
-        const candidateModels = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"];
+        const candidateModels = ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash"];
         let resultText: string | null = null;
         let lastError: Error | null = null;
 
         for (const modelName of candidateModels) {
-            try {
-                const response = await ai.models.generateContent({
-                    model: modelName,
-                    contents: systemPrompt,
-                    config: {
-                        responseMimeType: "application/json",
-                    },
-                });
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    const response = await ai.models.generateContent({
+                        model: modelName,
+                        contents: systemPrompt,
+                        config: {
+                            responseMimeType: "application/json",
+                        },
+                    });
 
-                if (response.text) {
-                    resultText = response.text;
-                    break;
+                    if (response.text) {
+                        resultText = response.text;
+                        break;
+                    }
+                } catch (err) {
+                    lastError = err instanceof Error ? err : new Error(String(err));
+                    console.warn(`Model ${modelName} (attempt ${attempt}) failed or busy, retrying...`, lastError.message);
+                    if (attempt < 3) await new Promise((r) => setTimeout(r, 400));
                 }
-            } catch (err) {
-                lastError = err instanceof Error ? err : new Error(String(err));
-                console.warn(`Model ${modelName} failed or busy, trying next fallback...`, lastError.message);
             }
+            if (resultText) break;
         }
 
         if (!resultText) {

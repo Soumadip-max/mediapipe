@@ -60,25 +60,29 @@ export async function POST(req: Request) {
             parts: [{ text: message }],
         });
 
-        const candidateModels = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.8-flash"];
+        const candidateModels = ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash"];
         let replyText: string | null = null;
         let lastError: Error | null = null;
 
         for (const modelName of candidateModels) {
-            try {
-                const response = await ai.models.generateContent({
-                    model: modelName,
-                    contents: formattedContents,
-                });
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    const response = await ai.models.generateContent({
+                        model: modelName,
+                        contents: formattedContents,
+                    });
 
-                if (response.text) {
-                    replyText = response.text;
-                    break;
+                    if (response.text) {
+                        replyText = response.text;
+                        break;
+                    }
+                } catch (err) {
+                    lastError = err instanceof Error ? err : new Error(String(err));
+                    console.warn(`Model ${modelName} (attempt ${attempt}) failed or busy, retrying...`, lastError.message);
+                    if (attempt < 3) await new Promise((r) => setTimeout(r, 400));
                 }
-            } catch (err) {
-                lastError = err instanceof Error ? err : new Error(String(err));
-                console.warn(`Model ${modelName} failed or busy in doubt solver, trying next fallback...`, lastError.message);
             }
+            if (replyText) break;
         }
 
         if (!replyText) {

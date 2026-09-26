@@ -41,74 +41,14 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
     return (
         <div className="w-full bg-transparent text-[#e2e2eb] font-sans antialiased selection:bg-[#c3f400] selection:text-[#283500] min-h-screen">
             {/* ==========================================
-                HEADER BAR (Stitch Nav matching provided HTML)
-                ========================================== */}
-            <header className="fixed top-0 inset-x-0 z-50 bg-[#090a0f]/80 backdrop-blur-md border-b border-white/10">
-                <div className="h-20 max-w-[1360px] mx-auto px-6 lg:px-8 flex items-center justify-between gap-6">
-                    {/* Brand Logo & Name */}
-                    <button
-                        onClick={() => setActiveTab("learning")}
-                        className="flex items-center gap-3 group cursor-pointer focus:outline-none"
-                    >
-                        <div className="w-8 h-8 rounded-full bg-[#0c0e14] border border-[#444933] flex items-center justify-center p-1.5 shadow-[0_0_12px_rgba(195,244,0,0.2)]">
-                            <span className="material-symbols-outlined text-[#c3f400] text-xl">hub</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="font-[#Plus_Jakarta_Sans] text-xl font-bold tracking-tight text-white group-hover:text-[#c3f400] transition-colors">
-                                Zenith
-                            </span>
-                        </div>
-                    </button>
-
-                    {/* Navbar Links */}
-                    <nav className="hidden xl:flex items-center gap-1 p-1 rounded-full bg-[#0c0e14]/60 border border-white/5">
-                        <button
-                            onClick={() => setActiveTab("learning")}
-                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
-                        >
-                            Roadmaps
-                        </button>
-                        <button
-                            onClick={() => {
-                                setActiveTab("job-prep");
-                                setActiveJobSubTab("mock-interview");
-                            }}
-                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
-                        >
-                            Mock Interview
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("doubt-solver")}
-                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
-                        >
-                            Doubt Engine
-                        </button>
-                    </nav>
-
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setActiveTab("learning")}
-                            className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all"
-                        >
-                            Log In
-                        </button>
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#283500] shrink-0">
-                            <span className="material-symbols-outlined text-lg">person</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {/* ==========================================
                 MAIN CONTENT
                 ========================================== */}
-            <main className="w-full pt-20 bg-transparent">
+            <main className="w-full pt-4 sm:pt-6 bg-transparent">
                 <div className="flex flex-col w-full">
                     {/* ==========================================
                        SECTION 1: THE UPPER COSMOS (MIDNIGHT HERO)
                        ========================================== */}
-                    <section className="relative w-full bg-transparent overflow-hidden pb-28 pt-8">
+                    <section className="relative w-full bg-transparent overflow-hidden pb-28 pt-4">
                         {/* Ambient Neon Mesh Glows */}
                         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-[#c3f400]/15 via-[#c0c1ff]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
                         <div className="absolute top-96 -left-48 w-96 h-96 bg-[#c3f400]/10 blur-[120px] pointer-events-none rounded-full" />
