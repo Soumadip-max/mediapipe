@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import TopNavbar, { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
 import LandingHero from "@/components/landing/LandingHero";
 import FaceAnalyzer from "@/components/job-prep/FaceAnalyzer";
@@ -11,15 +12,32 @@ import ChatDrawer from "@/components/doubt-solver/ChatDrawer";
 import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function Home() {
+    const { user, isLoading } = useUser();
     const [activeTab, setActiveTab] = useState<MainTab>("home");
     const [activeJobSubTab, setActiveJobSubTab] = useState<JobSubTab>("mock-interview");
+
+    // Auto-route authenticated users to the learning dashboard
+    useEffect(() => {
+        if (!isLoading && user && activeTab === "home") {
+            setActiveTab("learning");
+        }
+    }, [user, isLoading, activeTab]);
+
+    // Protect inner tabs from unauthenticated users
+    const handleTabChange = (tab: MainTab) => {
+        if (tab !== "home" && !user && !isLoading) {
+            window.location.href = "/auth/login";
+            return;
+        }
+        setActiveTab(tab);
+    };
 
     return (
         <KineticGrid className="min-h-screen flex flex-col font-sans selection:bg-[#c4f82a]/30 selection:text-[#c4f82a]">
             {/* Top Bar Navigation Header */}
             <TopNavbar
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                setActiveTab={handleTabChange}
                 activeJobSubTab={activeJobSubTab}
                 setActiveJobSubTab={setActiveJobSubTab}
             />
@@ -29,7 +47,7 @@ export default function Home() {
                 {/* 1. Zenith Landing Page Hero Showcase */}
                 {activeTab === "home" && (
                     <LandingHero
-                        setActiveTab={setActiveTab}
+                        setActiveTab={handleTabChange}
                         setActiveJobSubTab={setActiveJobSubTab}
                     />
                 )}
@@ -57,6 +75,25 @@ export default function Home() {
                     </div>
                 )}
             </main>
+
+            {/* Footer */}
+            <footer className="w-full border-t border-slate-800/60 py-6 px-4 bg-[#05070b] text-center text-xs text-slate-500">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-300">Zenith AI Platform</span>
+                        <span>© 2026 Zenith Career Systems Inc. All rights reserved.</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-slate-400">
+                        <button onClick={() => handleTabChange("home")} className="hover:text-[#c4f82a] transition-colors">
+                            Home
+                        </button>
+                        <button onClick={() => handleTabChange("learning")} className="hover:text-[#c4f82a] transition-colors">
+                            Roadmaps
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </div>
         </KineticGrid>
     );
 }

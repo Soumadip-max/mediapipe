@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useState } from "react";
 import {
     BookOpen,
@@ -28,6 +29,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+=======
+import React from "react";
+import { BookOpen, Briefcase, MessageSquare, Video, FileText, Sparkles, User, ArrowLeft } from "lucide-react";
+import { useUser } from '@auth0/nextjs-auth0/client';
+>>>>>>> 9a8a767402371bda53f0d31277e529b94933c92c
 
 export type MainTab = "home" | "learning" | "job-prep" | "doubt-solver";
 export type JobSubTab = "mock-interview" | "ats-checker" | "linkedin-optimizer";
@@ -45,6 +51,7 @@ export default function TopNavbar({
     activeJobSubTab,
     setActiveJobSubTab,
 }: TopNavbarProps) {
+<<<<<<< HEAD
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleNavSelect = (tab: MainTab, subTab?: JobSubTab) => {
@@ -52,6 +59,11 @@ export default function TopNavbar({
         if (subTab) setActiveJobSubTab(subTab);
         setMobileOpen(false);
     };
+=======
+    const { user, isLoading } = useUser();
+
+    if (activeTab === "home") return null;
+>>>>>>> 9a8a767402371bda53f0d31277e529b94933c92c
 
     return (
         <header className="sticky top-0 inset-x-0 z-50 w-full bg-[#090a0f]/90 backdrop-blur-xl border-b border-white/10 shadow-lg">
@@ -152,6 +164,7 @@ export default function TopNavbar({
                                     </button>
                                 </div>
 
+<<<<<<< HEAD
                                 <div className="h-px bg-slate-800/80 w-full" />
 
                                 <div>
@@ -394,6 +407,34 @@ export default function TopNavbar({
                             }}
                         />
                     </SignedIn>
+=======
+                    {/* Right Hand Profile */}
+                    <div className="flex items-center gap-4">
+                        {isLoading ? (
+                            <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse border border-slate-700"></div>
+                        ) : user ? (
+                            <div className="flex items-center gap-3">
+                                <span className="text-xs font-medium text-slate-300 hidden sm:inline-block">
+                                    {user.name || user.email}
+                                </span>
+                                {user.picture ? (
+                                    <img src={user.picture} alt="Profile" className="w-8 h-8 rounded-full border border-slate-600" />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+                                        <User className="w-4 h-4" />
+                                    </div>
+                                )}
+                                <a href="/auth/logout" className="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+                                    Logout
+                                </a>
+                            </div>
+                        ) : (
+                            <a href="/auth/login" className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#c4f82a] text-[#07090e] hover:bg-[#b0df26] transition-colors shadow-sm">
+                                Login
+                            </a>
+                        )}
+                    </div>
+>>>>>>> 9a8a767402371bda53f0d31277e529b94933c92c
                 </div>
             </div>
         </header>

@@ -9,7 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@clerk/nextjs": "^6.39.7",
+=======
+    "@auth0/nextjs-auth0": "^4.30.0",
+>>>>>>> 9a8a767402371bda53f0d31277e529b94933c92c
     "@google/genai": "^2.21.0",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/tasks-vision": "^1.0.1",
