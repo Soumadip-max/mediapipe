@@ -10,6 +10,10 @@ export async function POST(req: NextRequest) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             return NextResponse.json(getFallbackRoadmap(domain, experienceLevel));
+            return NextResponse.json(
+                { error: "GEMINI_API_KEY environment variable is missing" },
+                { status: 500 }
+            );
         }
 
         const ai = new GoogleGenAI({ apiKey });
@@ -150,3 +154,23 @@ function getFallbackRoadmap(domain: string, level: string) {
         ],
     };
 }
+        const response = await ai.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: prompt,
+        });
+
+        const rawText = response.text || "";
+        const jsonText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+        const data = JSON.parse(jsonText);
+
+        return NextResponse.json(data);
+    } catch (error: any) {
+        console.error("Roadmap API error:", error);
+        return NextResponse.json(
+            { error: error?.message || "Failed to generate AI roadmap graph. Please try again." },
+            { status: 500 }
+        );
+    }
+}
+
+

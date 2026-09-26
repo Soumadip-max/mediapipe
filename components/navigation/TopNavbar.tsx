@@ -27,8 +27,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import React from "react";
+import { BookOpen, Briefcase, MessageSquare, Video, FileText, Sparkles, User, ArrowLeft } from "lucide-react";
+import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 
-export type MainTab = "home" | "learning" | "job-prep" | "doubt-solver";
+export type MainTab = "home" | "learning" | "job-prep" | "doubt-solver" | "profile";
 export type JobSubTab = "mock-interview" | "ats-checker" | "linkedin-optimizer";
 
 interface TopNavbarProps {
@@ -45,6 +48,7 @@ export default function TopNavbar({
     setActiveJobSubTab,
 }: TopNavbarProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { isSignedIn } = useUser();
 
     const handleNavSelect = (tab: MainTab, subTab?: JobSubTab) => {
         setActiveTab(tab);
@@ -234,6 +238,72 @@ export default function TopNavbar({
                             </span>
                         </div>
                     </button>
+                    {/* Navigation Tabs for Active Features */}
+                    <nav className="flex items-center gap-1.5 bg-[#0f1422] p-1.5 rounded-full border border-slate-800">
+                        <button
+                            onClick={() => setActiveTab("learning")}
+                            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                activeTab === "learning"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
+                                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                            }`}
+                        >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>Learn & Roadmaps</span>
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                setActiveTab("job-prep");
+                                setActiveJobSubTab("mock-interview");
+                            }}
+                            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                activeTab === "job-prep"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
+                                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                            }`}
+                        >
+                            <Briefcase className="w-3.5 h-3.5" />
+                            <span>Job Prep Studio</span>
+                        </button>
+
+                        <button
+                            onClick={() => setActiveTab("doubt-solver")}
+                            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                activeTab === "doubt-solver"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
+                                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                            }`}
+                        >
+                            <MessageSquare className="w-3.5 h-3.5" />
+                            <span>Doubt Solver</span>
+                        </button>
+
+                        <button
+                            onClick={() => setActiveTab("profile")}
+                            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                activeTab === "profile"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
+                                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                            }`}
+                        >
+                            <User className="w-3.5 h-3.5" />
+                            <span>Evaluation Profile</span>
+                        </button>
+                    </nav>
+
+                    {/* Right Hand User Avatar / Profile */}
+                    <div className="flex items-center gap-3">
+                        {!isSignedIn ? (
+                            <SignInButton mode="modal">
+                                <button className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#c4f82a] text-[#07090e] hover:bg-[#b0df26] transition-colors shadow-sm cursor-pointer">
+                                    Sign In
+                                </button>
+                            </SignInButton>
+                        ) : (
+                            <UserButton />
+                        )}
+                    </div>
                 </div>
 
                 {/* ── Center: Desktop NavigationMenu (Centered in Nav) ── */}

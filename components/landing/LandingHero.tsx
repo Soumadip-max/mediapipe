@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
+import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import HoverFooter from "@/components/ui/hover-footer";
 
 interface LandingHeroProps {
@@ -10,6 +11,7 @@ interface LandingHeroProps {
 }
 
 export default function LandingHero({ setActiveTab, setActiveJobSubTab }: LandingHeroProps) {
+    const { isSignedIn } = useUser();
     const [searchRole, setSearchRole] = useState("");
     const [ctaEmail, setCtaEmail] = useState("");
     const [ctaSubmitted, setCtaSubmitted] = useState(false);
@@ -40,6 +42,71 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
 
     return (
         <div className="w-full bg-transparent text-[#e2e2eb] font-sans antialiased selection:bg-[#c3f400] selection:text-[#283500] min-h-screen">
+            {/* ==========================================
+                HEADER BAR (Stitch Nav matching provided HTML)
+                ========================================== */}
+            <header className="fixed top-0 inset-x-0 z-50 bg-[#090a0f]/80 backdrop-blur-md border-b border-white/10">
+                <div className="h-20 max-w-[1360px] mx-auto px-6 lg:px-8 flex items-center justify-between gap-6">
+                    {/* Brand Logo & Name */}
+                    <button
+                        onClick={() => setActiveTab("learning")}
+                        className="flex items-center gap-3 group cursor-pointer focus:outline-none"
+                    >
+                        <div className="w-8 h-8 rounded-full bg-[#0c0e14] border border-[#444933] flex items-center justify-center p-1.5 shadow-[0_0_12px_rgba(195,244,0,0.2)]">
+                            <span className="material-symbols-outlined text-[#c3f400] text-xl">hub</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="font-[#Plus_Jakarta_Sans] text-xl font-bold tracking-tight text-white group-hover:text-[#c3f400] transition-colors">
+                                Zenith
+                            </span>
+                        </div>
+                    </button>
+
+                    {/* Navbar Links */}
+                    <nav className="hidden xl:flex items-center gap-1 p-1 rounded-full bg-[#0c0e14]/60 border border-white/5">
+                        <button
+                            onClick={() => setActiveTab("learning")}
+                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
+                        >
+                            Roadmaps
+                        </button>
+                        <button
+                            onClick={() => {
+                                setActiveTab("job-prep");
+                                setActiveJobSubTab("mock-interview");
+                            }}
+                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
+                        >
+                            Mock Interview
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("doubt-solver")}
+                            className="px-4 py-1.5 font-medium text-xs text-[#c4c9ac] hover:text-white hover:bg-white/10 rounded-full transition-all"
+                        >
+                            Doubt Engine
+                        </button>
+                    </nav>
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-3">
+                        {!isSignedIn ? (
+                            <SignInButton mode="modal">
+                                <button className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all cursor-pointer">
+                                    Log In
+                                </button>
+                            </SignInButton>
+                        ) : null}
+                        <button
+                            onClick={() => setActiveTab("learning")}
+                            className="inline-flex items-center justify-center px-5 py-2 rounded-full bg-[#c3f400] text-xs font-bold text-[#283500] hover:bg-[#abd600] transition-all shadow-[0_0_20px_-4px_rgba(195,244,0,0.5)] cursor-pointer"
+                        >
+                            Get Started
+                        </button>
+                        {isSignedIn ? <UserButton /> : null}
+                    </div>
+                </div>
+            </header>
+
             {/* ==========================================
                 MAIN CONTENT
                 ========================================== */}

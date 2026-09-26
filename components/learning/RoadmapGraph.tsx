@@ -1,26 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
+import {
+    ReactFlow,
+    Background,
+    Controls,
+    MiniMap,
+    useNodesState,
+    useEdgesState,
+    Node,
+    Edge,
+    Handle,
+    Position,
+    NodeProps,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { Video, ExternalLink, X, BookOpen, Layers, Terminal, Sparkles, AlertTriangle, CheckCircle2, Clock, FastForward } from "lucide-react";
 
-export interface TopicItem {
-    title: string;
-    description: string;
-    drawerItems: {
-        label1: string;
-        val1: string;
-        label2: string;
-        val2: string;
-        label3: string;
-        val3: string;
-    };
-    youtubeSearchQuery: string;
-}
-
-export interface RoadmapPhase {
-    phaseNum: number;
-    phaseName: string;
-    weeks: string;
-    topics: TopicItem[];
+// ==========================================
+// TYPES & INTERFACES
+// ==========================================
+export interface RoadmapNodeData extends Record<string, unknown> {
+    label: string;
+    phase?: string;
+    description?: string;
+    type?: "main" | "subtopic" | "choice";
+    keyConcepts?: string;
+    notes?: string;
+    youtubeQuery?: string;
+    youtubeSearchQuery?: string;
+    status?: "learning" | "done" | "skip";
 }
 
 const PRESET_DOMAINS = [
@@ -31,371 +40,304 @@ const PRESET_DOMAINS = [
     "System Design & Cloud Infrastructure",
 ];
 
-const INITIAL_PHASES: RoadmapPhase[] = [
+// Custom Roadmap.sh Styled Node Component
+function CustomRoadmapNode({ data, selected }: NodeProps) {
+    const nodeData = data as unknown as RoadmapNodeData;
+    const isMain = nodeData.type === "main";
+    const status = nodeData.status || "learning";
+
+    const statusBg =
+        status === "done"
+            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
+            : status === "skip"
+            ? "bg-slate-700/40 text-slate-400 border-slate-600/30"
+            : "bg-[#c3f400]/20 text-[#c3f400] border-[#c3f400]/40";
+
+    return (
+        <div
+            className={`px-5 py-3.5 rounded-2xl transition-all cursor-pointer shadow-xl border text-left min-w-[240px] max-w-[280px] ${
+                isMain
+                    ? "bg-[#c3f400] text-[#283500] border-[#9fc700] shadow-[0_0_25px_rgba(195,244,0,0.35)] font-black"
+                    : "bg-[#191b22] text-slate-100 border-white/10 hover:border-[#c3f400]/50 font-bold hover:bg-[#21232d]"
+            } ${selected ? "ring-2 ring-[#c3f400] ring-offset-2 ring-offset-[#0c0e14] scale-105" : ""}`}
+        >
+            <Handle type="target" position={Position.Top} className="!bg-[#c3f400] !w-3.5 !h-3.5 !border-2 !border-[#0c0e14]" />
+            <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                    <span
+                        className={`text-[9px] uppercase px-2 py-0.5 rounded-full font-extrabold tracking-wider ${
+                            isMain
+                                ? "bg-[#283500] text-[#c3f400]"
+                                : "bg-[#282a30] text-[#c0c1ff]"
+                        }`}
+                    >
+                        {nodeData.phase ? nodeData.phase.split(":")[0] : (nodeData.type || "Phase")}
+                    </span>
+                    <span className={`text-[9px] uppercase px-2 py-0.5 rounded-full font-bold border ${statusBg}`}>
+                        {status}
+                    </span>
+                </div>
+                <span className="text-xs font-extrabold tracking-tight line-clamp-2 leading-snug">{nodeData.label}</span>
+            </div>
+            <Handle type="source" position={Position.Bottom} className="!bg-[#c3f400] !w-3.5 !h-3.5 !border-2 !border-[#0c0e14]" />
+        </div>
+    );
+}
+
+// Deep 7-Phase Initial Nodes Layout
+const INITIAL_NODES: Node<RoadmapNodeData>[] = [
+    // Phase 1 (Y: 0 to 180)
     {
-        phaseNum: 1,
-        phaseName: "Phase 1: Advanced Frontend & State Management",
-        weeks: "Weeks 1–3",
-        topics: [
-            {
-                title: "React 19 & Next.js App Router Paradigms",
-                description: "Server Actions, streaming SSR, Suspense boundaries, useTransition mutations, and optimistic caching layers.",
-                drawerItems: {
-                    label1: "Key Architecture Skill",
-                    val1: "Partial Prerendering (PPR) & React DOM Actions",
-                    label2: "Recommended Deep-Dive",
-                    val2: "Jack Herrington: React Server Components Masterclass (48m)",
-                    label3: "Hands-on Challenge",
-                    val3: "Build an optimistic feed with instant edge rollbacks",
-                },
-                youtubeSearchQuery: "Next.js 15 App Router Server Components tutorial",
-            },
-            {
-                title: "Modern Web APIs & State Orchestration",
-                description: "Master global state sync, optimistic UI state machines, WebSocket event loops, and WebAssembly audio/image modules.",
-                drawerItems: {
-                    label1: "State Machinery",
-                    val1: "Zustand ephemeral state + TanStack Query cache invalidation",
-                    label2: "Recommended Stream",
-                    val2: "WebSockets at Scale: Distributed SocketIO via Redis PubSub",
-                    label3: "Checklist Goal",
-                    val3: "Implement zero-latency cursor collaborative canvas",
-                },
-                youtubeSearchQuery: "WebSockets Redis PubSub state synchronization tutorial",
-            },
-        ],
+        id: "1",
+        position: { x: 0, y: 0 },
+        data: {
+            label: "Language Runtimes & Memory Models",
+            phase: "Phase 1: Core Primitives",
+            type: "main",
+            description: "Master V8 event loop execution, stack/heap memory allocation, and async primitives.",
+            keyConcepts: "Event Loop, Call Stack, Garbage Collection, Non-blocking I/O",
+            notes: "Prevent thread-blocking synchronous operations and analyze memory leaks.",
+            youtubeQuery: "Language runtimes memory model event loop tutorial",
+            status: "done",
+        },
+        type: "roadmapNode",
     },
     {
-        phaseNum: 2,
-        phaseName: "Phase 2: Backend Microservices & Data Persistence",
-        weeks: "Weeks 4–6",
-        topics: [
-            {
-                title: "API Protocols & High-Throughput Routing",
-                description: "Design resilient RESTful API contracts, bidirectional gRPC schemas, typed GraphQL resolvers, and token bucket rate-limiting middleware.",
-                drawerItems: {
-                    label1: "Core Focus",
-                    val1: "Protocol Buffers v3 & HTTP/2 Multiplexing in Go/Node",
-                    label2: "Benchmark Lab",
-                    val2: "50,000 req/sec benchmark: Express vs Fastify vs Gin-Gonic",
-                    label3: "Production Checklist",
-                    val3: "Implement Redis sliding-window algorithm for client throttling",
-                },
-                youtubeSearchQuery: "gRPC Protocol Buffers high throughput API tutorial",
-            },
-            {
-                title: "Database Indexing & Caching Layer",
-                description: "Optimize SQL query execution plans, PostgreSQL B-Tree & GIN indexes, Redis cache stampede patterns, and distributed ACID transactions.",
-                drawerItems: {
-                    label1: "Query Anatomy",
-                    val1: "EXPLAIN (ANALYZE, BUFFERS) deep dive for nested sequential scans",
-                    label2: "Video Course Module",
-                    val2: "Hussein Nasser: Advanced Database Systems & Partitioning",
-                    label3: "Interactive Sandbox",
-                    val3: "Tune multi-column composite index under 10M rows workload",
-                },
-                youtubeSearchQuery: "PostgreSQL B-Tree indexing query performance tuning",
-            },
-        ],
+        id: "2",
+        position: { x: -280, y: 130 },
+        data: {
+            label: "Type Systems & Compiler Pipelines",
+            phase: "Phase 1: Core Primitives",
+            type: "subtopic",
+            description: "Deep dive into static type inference, AST parsing, and build target compilation.",
+            keyConcepts: "TypeScript Compiler, AST, Generics, Type Narrowing",
+            notes: "Strict compiler flags prevent runtime uncaught exceptions.",
+            youtubeQuery: "TypeScript compiler AST type inference deep dive",
+            status: "done",
+        },
+        type: "roadmapNode",
     },
     {
-        phaseNum: 3,
-        phaseName: "Phase 3: System Resilience & CI/CD Production",
-        weeks: "Weeks 7–8",
-        topics: [
-            {
-                title: "Containerization & Cloud Deployment",
-                description: "Build lightweight multi-stage Docker builds, configure Kubernetes orchestration pods with ingress, and automate zero-downtime CI/CD pipelines.",
-                drawerItems: {
-                    label1: "DevOps Foundation",
-                    val1: "Alpine minimal layers + non-root security boundaries",
-                    label2: "Walkthrough",
-                    val2: "TechWorld with Nana: K8s ConfigMaps & Secret Vaults",
-                    label3: "Live Exercise",
-                    val3: "Deploy blue-green canary rollouts on GitHub Actions",
-                },
-                youtubeSearchQuery: "Docker Kubernetes CI CD GitHub Actions pipeline",
-            },
-            {
-                title: "Distributed Tracing, Telemetry & Observability",
-                description: "Implement OpenTelemetry distributed spans, Prometheus metric counters, Grafana SLI/SLA alerts, and automated Kubernetes health probing.",
-                drawerItems: {
-                    label1: "Observability Spec",
-                    val1: "W3C TraceContext propagation across async message queues",
-                    label2: "Target Tutorial",
-                    val2: "OpenTelemetry in Production: Jaeger & Tempo collector setup",
-                    label3: "Final Capstone",
-                    val3: "Diagnose 99th percentile p99 latency spikes under synthetic load",
-                },
-                youtubeSearchQuery: "OpenTelemetry Jaeger Prometheus Grafana tracing tutorial",
-            },
-        ],
+        id: "3",
+        position: { x: 280, y: 130 },
+        data: {
+            label: "Async Concurrency & Threads",
+            phase: "Phase 1: Core Primitives",
+            type: "subtopic",
+            description: "Master Promises, Web Workers, Atomics, and thread synchronization.",
+            keyConcepts: "Web Workers, SharedArrayBuffer, Atomics, Mutex",
+            notes: "Offload compute-intensive vision loops to background worker threads.",
+            youtubeQuery: "Web Workers SharedArrayBuffer JavaScript concurrency",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 2 (Y: 320 to 500)
+    {
+        id: "4",
+        position: { x: 0, y: 320 },
+        data: {
+            label: "System Data Structures & Algorithms",
+            phase: "Phase 2: System Architecture",
+            type: "main",
+            description: "B-Trees, Trie structures, Bloom filters, and graph traversal optimization.",
+            keyConcepts: "B-Trees, Bloom Filters, Consistent Hashing, Dijkstra",
+            notes: "Select data structures according to time/space complexity trade-offs.",
+            youtubeQuery: "Data structures bloom filters consistent hashing tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+    {
+        id: "5",
+        position: { x: -280, y: 450 },
+        data: {
+            label: "Protocol Standards (HTTP/3, gRPC, WSS)",
+            phase: "Phase 2: System Architecture",
+            type: "subtopic",
+            description: "HTTP/2 multiplexing, QUIC protocol, gRPC ProtoBuf serialization, and WebSocket state.",
+            keyConcepts: "HTTP/3 QUIC, gRPC, Protocol Buffers, WebSocket Backpressure",
+            notes: "Protocol Buffers reduce payload size by up to 80% compared to JSON.",
+            youtubeQuery: "gRPC HTTP3 QUIC WebSockets protocol comparison",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+    {
+        id: "6",
+        position: { x: 280, y: 450 },
+        data: {
+            label: "Distributed Systems & Consensus",
+            phase: "Phase 2: System Architecture",
+            type: "subtopic",
+            description: "CAP theorem tradeoffs, Raft consensus algorithm, and event-driven sagas.",
+            keyConcepts: "CAP Theorem, Raft Consensus, Event Sourcing, Saga Pattern",
+            notes: "Balance linearizability vs availability in distributed state machines.",
+            youtubeQuery: "Distributed systems Raft consensus CAP theorem tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 3 (Y: 640 to 820)
+    {
+        id: "7",
+        position: { x: 0, y: 640 },
+        data: {
+            label: "Framework Primaries & SSR Rendering",
+            phase: "Phase 3: Framework Primaries",
+            type: "main",
+            description: "Next.js App Router, React 19 Server Components, Suspense, and Hydration boundaries.",
+            keyConcepts: "Server Components, Partial Prerendering, Suspense, Hydration",
+            notes: "Eliminate client hydration waterfalls with zero-bundle-size server components.",
+            youtubeQuery: "Next.js App Router React 19 architecture tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+    {
+        id: "8",
+        position: { x: -280, y: 770 },
+        data: {
+            label: "Atomic State & Client Cache",
+            phase: "Phase 3: Framework Primaries",
+            type: "subtopic",
+            description: "Zustand state selectors, TanStack Query cache invalidation, and optimistic UI.",
+            keyConcepts: "Zustand, TanStack Query, Mutation Optimistic Updates",
+            notes: "Prevent re-render loops using granular state selectors.",
+            youtubeQuery: "Zustand TanStack Query state orchestration tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 4 (Y: 960 to 1140)
+    {
+        id: "9",
+        position: { x: 0, y: 960 },
+        data: {
+            label: "Database Indexing & Query Tuning",
+            phase: "Phase 4: Database Systems",
+            type: "main",
+            description: "Postgres B-Tree & GIN indexes, EXPLAIN ANALYZE execution plans, and N+1 query elimination.",
+            keyConcepts: "B-Tree Indexing, GIN, EXPLAIN ANALYZE, Connection Pooling",
+            notes: "Index foreign keys and composite filter queries for sub-10ms response times.",
+            youtubeQuery: "PostgreSQL index query optimization EXPLAIN ANALYZE",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+    {
+        id: "10",
+        position: { x: 280, y: 1090 },
+        data: {
+            label: "Redis Cluster & Storage Topologies",
+            phase: "Phase 4: Database Systems",
+            type: "subtopic",
+            description: "Redis cluster sharding, cache stampede prevention (Singleflight), and Read-Through caching.",
+            keyConcepts: "Redis Cluster, Cache Stampede, Singleflight, LRU Eviction",
+            notes: "Implement distributed locks and rate limiters over Redis memory instances.",
+            youtubeQuery: "Redis cluster caching strategies tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 5 (Y: 1280 to 1460)
+    {
+        id: "11",
+        position: { x: 0, y: 1280 },
+        data: {
+            label: "Security Protocols & API Gateways",
+            phase: "Phase 5: Security Protocols",
+            type: "main",
+            description: "OAuth 2.0 PKCE, JWT RS256 signing, mTLS, and Rate-Limiting Gateways.",
+            keyConcepts: "OAuth2 PKCE, JWT RS256, mTLS, Sliding Window Rate Limiting",
+            notes: "Enforce zero-trust network policies and token revocation blacklists.",
+            youtubeQuery: "OAuth2 JWT security API gateway architecture tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 6 (Y: 1600 to 1780)
+    {
+        id: "12",
+        position: { x: -280, y: 1600 },
+        data: {
+            label: "Automated E2E Testing & Chaos Engineering",
+            phase: "Phase 6: Testing Paradigms",
+            type: "subtopic",
+            description: "Playwright E2E suites, MSW network mocking, and chaos latency injection.",
+            keyConcepts: "Playwright, MSW, Chaos Engineering, Code Coverage",
+            notes: "Run parallel headless browser runs on pull requests.",
+            youtubeQuery: "Playwright E2E testing MSW API mocking tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+    {
+        id: "13",
+        position: { x: 280, y: 1600 },
+        data: {
+            label: "CI/CD Automation & Build Pipelines",
+            phase: "Phase 6: Testing Paradigms",
+            type: "subtopic",
+            description: "GitHub Actions matrix builds, Docker layer caching, and semantic release versioning.",
+            keyConcepts: "GitHub Actions, Docker BuildKit, Semantic Release, Helm Charts",
+            notes: "Optimize Docker multi-stage builds for zero-downtime deployment.",
+            youtubeQuery: "GitHub Actions Docker CI CD pipeline optimization",
+            status: "learning",
+        },
+        type: "roadmapNode",
+    },
+
+    // Phase 7 (Y: 1920 to 2100)
+    {
+        id: "14",
+        position: { x: 0, y: 1920 },
+        data: {
+            label: "Kubernetes & Telemetry Observability",
+            phase: "Phase 7: Cloud Infrastructure",
+            type: "main",
+            description: "K8s Ingress controllers, OpenTelemetry distributed tracing, Jaeger, and Prometheus metrics.",
+            keyConcepts: "Kubernetes, OpenTelemetry, Jaeger, Prometheus, p99 Latency Alerts",
+            notes: "Trace request lifecycles across microservice boundaries via OpenTelemetry context propagation.",
+            youtubeQuery: "Kubernetes OpenTelemetry Jaeger Prometheus observability tutorial",
+            status: "learning",
+        },
+        type: "roadmapNode",
     },
 ];
 
-const DOMAIN_ROADMAPS: Record<string, RoadmapPhase[]> = {
-    "Full-Stack Web Engineering": [
-        {
-            phaseNum: 1,
-            phaseName: "Phase 1: Advanced Frontend & State Management",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "React 19 & Next.js App Router Paradigms",
-                    description: "Server Actions, streaming SSR, Suspense boundaries, useTransition mutations, and optimistic caching layers.",
-                    drawerItems: {
-                        label1: "Key Architecture Skill",
-                        val1: "Partial Prerendering (PPR) & React DOM Actions",
-                        label2: "Recommended Deep-Dive",
-                        val2: "Jack Herrington: React Server Components Masterclass",
-                        label3: "Hands-on Challenge",
-                        val3: "Build an optimistic feed with instant edge rollbacks",
-                    },
-                    youtubeSearchQuery: "Next.js App Router Server Components tutorial",
-                },
-                {
-                    title: "Modern Web APIs & State Orchestration",
-                    description: "Master global state sync, optimistic UI state machines, WebSocket event loops, and WebAssembly audio/image modules.",
-                    drawerItems: {
-                        label1: "State Machinery",
-                        val1: "Zustand ephemeral state + TanStack Query cache invalidation",
-                        label2: "Recommended Stream",
-                        val2: "WebSockets at Scale: Distributed SocketIO via Redis PubSub",
-                        label3: "Checklist Goal",
-                        val3: "Implement zero-latency cursor collaborative canvas",
-                    },
-                    youtubeSearchQuery: "WebSockets Redis PubSub state synchronization tutorial",
-                },
-            ],
-        },
-        {
-            phaseNum: 2,
-            phaseName: "Phase 2: Backend Microservices & Data Persistence",
-            weeks: "Weeks 4–6",
-            topics: [
-                {
-                    title: "API Protocols & High-Throughput Routing",
-                    description: "Design resilient RESTful API contracts, bidirectional gRPC schemas, typed GraphQL resolvers, and token bucket rate-limiting middleware.",
-                    drawerItems: {
-                        label1: "Core Focus",
-                        val1: "Protocol Buffers v3 & HTTP/2 Multiplexing in Go/Node",
-                        label2: "Benchmark Lab",
-                        val2: "50,000 req/sec benchmark: Express vs Fastify vs Gin-Gonic",
-                        label3: "Production Checklist",
-                        val3: "Implement Redis sliding-window algorithm for client throttling",
-                    },
-                    youtubeSearchQuery: "gRPC Protocol Buffers high throughput API tutorial",
-                },
-                {
-                    title: "Database Indexing & Caching Layer",
-                    description: "Optimize SQL query execution plans, PostgreSQL B-Tree & GIN indexes, Redis cache stampede patterns, and distributed ACID transactions.",
-                    drawerItems: {
-                        label1: "Query Anatomy",
-                        val1: "EXPLAIN (ANALYZE, BUFFERS) deep dive for nested sequential scans",
-                        label2: "Video Course Module",
-                        val2: "Hussein Nasser: Advanced Database Systems & Partitioning",
-                        label3: "Interactive Sandbox",
-                        val3: "Tune multi-column composite index under 10M rows workload",
-                    },
-                    youtubeSearchQuery: "PostgreSQL B-Tree indexing query performance tuning",
-                },
-            ],
-        },
-        {
-            phaseNum: 3,
-            phaseName: "Phase 3: System Resilience & CI/CD Production",
-            weeks: "Weeks 7–8",
-            topics: [
-                {
-                    title: "Containerization & Cloud Deployment",
-                    description: "Build lightweight multi-stage Docker builds, configure Kubernetes orchestration pods with ingress, and automate zero-downtime CI/CD pipelines.",
-                    drawerItems: {
-                        label1: "DevOps Foundation",
-                        val1: "Alpine minimal layers + non-root security boundaries",
-                        label2: "Walkthrough",
-                        val2: "TechWorld with Nana: K8s ConfigMaps & Secret Vaults",
-                        label3: "Live Exercise",
-                        val3: "Deploy blue-green canary rollouts on GitHub Actions",
-                    },
-                    youtubeSearchQuery: "Docker Kubernetes CI CD GitHub Actions pipeline",
-                },
-            ],
-        },
-    ],
-    "Backend & Microservices Architecture": [
-        {
-            phaseNum: 1,
-            phaseName: "Phase 1: High-Performance Concurrent Runtimes",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "Concurrency Primitives & Memory Models",
-                    description: "Goroutines, channels, mutex lock contention, thread safety, and thread-pool execution in Go / Node.js worker threads.",
-                    drawerItems: {
-                        label1: "Core Concepts",
-                        val1: "Atomic operations, memory barriers, work-stealing schedulers",
-                        label2: "Deep-Dive Tutorial",
-                        val2: "Go Concurrency Patterns & Mutex Lock Contention",
-                        label3: "Practical Benchmark",
-                        val3: "Profile lock contention using pprof and trace tools",
-                    },
-                    youtubeSearchQuery: "Go concurrency channels mutex pprof tutorial",
-                },
-                {
-                    title: "Message Brokers & Event-Driven Architecture",
-                    description: "Kafka partition rebalancing, RabbitMQ exchange topologies, idempotent consumers, and outbox transactional patterns.",
-                    drawerItems: {
-                        label1: "Event Streaming",
-                        val1: "Apache Kafka log compaction & exactly-once semantics",
-                        label2: "Architecture Blueprint",
-                        val2: "Transactional Outbox Pattern with Debezium CDC",
-                        label3: "Hands-on Lab",
-                        val3: "Implement consumer group rebalance handler",
-                    },
-                    youtubeSearchQuery: "Apache Kafka event driven architecture outbox pattern",
-                },
-            ],
-        },
-        {
-            phaseNum: 2,
-            phaseName: "Phase 2: Distributed Data & Caching",
-            weeks: "Weeks 4–6",
-            topics: [
-                {
-                    title: "Distributed Caching & Eviction Strategies",
-                    description: "Redis cluster partitioning, consistency hashing, cache-aside, write-through, and bloom filter membership queries.",
-                    drawerItems: {
-                        label1: "Cache Resilience",
-                        val1: "Consistent Hashing & Redis Cluster Sentinel Failover",
-                        label2: "Benchmark Guide",
-                        val2: "Preventing Cache Avalanche & Stampede with Singleflight",
-                        label3: "Interactive Task",
-                        val3: "Implement Redis LFU/LRU eviction with TTL jitter",
-                    },
-                    youtubeSearchQuery: "Redis cluster consistent hashing bloom filter tutorial",
-                },
-                {
-                    title: "Database Sharding & Replication",
-                    description: "Master-replica sync lag, horizontal database sharding key selection, 2PC saga patterns, and distributed locks.",
-                    drawerItems: {
-                        label1: "Storage Engine",
-                        val1: "Postgres Logical Replication & Vitess Sharding",
-                        label2: "System Design Guide",
-                        val2: "Designing Global DB Sharding Keys for High Throughput",
-                        label3: "Lab Exercise",
-                        val3: "Build a Redlock distributed lock manager in Redis",
-                    },
-                    youtubeSearchQuery: "Database horizontal sharding postgres vitess tutorial",
-                },
-            ],
-        },
-    ],
-    "Frontend & UI Performance": [
-        {
-            phaseNum: 1,
-            phaseName: "Phase 1: Browser Rendering Engine & Web Vitals",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "DOM Reflow, Repaint & GPU Acceleration",
-                    description: "Critical rendering path, compositor layers, layout thrashing, content-visibility, and hardware-accelerated CSS transforms.",
-                    drawerItems: {
-                        label1: "Performance Metric",
-                        val1: "INP (Interaction to Next Paint) & LCP optimization",
-                        label2: "Video Masterclass",
-                        val2: "Chrome DevTools Performance Profiling & Flamecharts",
-                        label3: "Hands-on Lab",
-                        val3: "Eliminate main thread blocking tasks under 50ms",
-                    },
-                    youtubeSearchQuery: "Chrome DevTools web vitals INP LCP rendering performance",
-                },
-                {
-                    title: "Advanced JavaScript Memory Management",
-                    description: "V8 garbage collection sweeps, heap snapshot debugging, detached DOM memory leaks, and WeakRef caching.",
-                    drawerItems: {
-                        label1: "Memory Profiling",
-                        val1: "V8 Mark-Sweep GC & Detached DOM node isolation",
-                        label2: "Debugging Guide",
-                        val2: "Finding JS Heap Memory Leaks with Chrome Memory Profiler",
-                        label3: "Practical Task",
-                        val3: "Fix event listener closure memory leaks in single-page apps",
-                    },
-                    youtubeSearchQuery: "JavaScript V8 memory leak heap snapshot chrome devtools",
-                },
-            ],
-        },
-    ],
-    "Data Structures & Algorithms": [
-        {
-            phaseNum: 1,
-            phaseName: "Phase 1: Core Patterns & Graph Algorithms",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "Two Pointers & Sliding Window Masterclass",
-                    description: "Dynamic window resizing, monotonic queue optimization, fast/slow pointers, and subarray sum invariants.",
-                    drawerItems: {
-                        label1: "Algorithmic Pattern",
-                        val1: "Sliding Window Maximum using Deque O(N)",
-                        label2: "Video Explanation",
-                        val2: "NeetCode: Sliding Window & Two Pointer Masterclass",
-                        label3: "Practice Problem",
-                        val3: "Solve Minimum Window Substring under 15 minutes",
-                    },
-                    youtubeSearchQuery: "Sliding window algorithm pattern NeetCode tutorial",
-                },
-                {
-                    title: "Graph Traversal: BFS, DFS & Topological Sort",
-                    description: "Kahn's algorithm, cycle detection, Dijkstra's shortest path, Union-Find disjoint sets, and minimum spanning trees.",
-                    drawerItems: {
-                        label1: "Graph Theory",
-                        val1: "Directed Acyclic Graphs (DAG) & Topological Ordering",
-                        label2: "Recommended Guide",
-                        val2: "William Fiset: Graph Theory Algorithms Course",
-                        label3: "Challenge Problem",
-                        val3: "Implement Course Schedule II DAG topological sort",
-                    },
-                    youtubeSearchQuery: "Graph theory topological sort Dijkstra algorithm tutorial",
-                },
-            ],
-        },
-    ],
-    "System Design & Cloud Infrastructure": [
-        {
-            phaseNum: 1,
-            phaseName: "Phase 1: Distributed Architecture & High Availability",
-            weeks: "Weeks 1–3",
-            topics: [
-                {
-                    title: "Load Balancers, API Gateways & Reverse Proxies",
-                    description: "Layer 4 vs Layer 7 load balancing, NGINX routing, Envoy proxy sidecars, SSL termination, and rate-limiting algorithms.",
-                    drawerItems: {
-                        label1: "Infrastructure Focus",
-                        val1: "Envoy Proxy Service Mesh & Consistent Ring Balancing",
-                        label2: "System Design Video",
-                        val2: "ByteByteGo: API Gateway vs Load Balancer vs Reverse Proxy",
-                        label3: "Architect Challenge",
-                        val3: "Configure NGINX rate-limiting with leaky bucket strategy",
-                    },
-                    youtubeSearchQuery: "System design API gateway load balancer Envoy tutorial",
-                },
-                {
-                    title: "Consensus Protocols & Fault Tolerance",
-                    description: "Raft consensus, Paxos quorums, split-brain mitigation, etcd key-value storage, and leader election mechanisms.",
-                    drawerItems: {
-                        label1: "Distributed Consensus",
-                        val1: "Raft Leader Election & Log Replication Consensus",
-                        label2: "Deep Dive Video",
-                        val2: "MIT 6.824: Distributed Systems Raft Protocol",
-                        label3: "Capstone Challenge",
-                        val3: "Simulate network partition recovery in a 3-node quorum",
-                    },
-                    youtubeSearchQuery: "Raft consensus algorithm MIT distributed systems tutorial",
-                },
-            ],
-        },
-    ],
-};
+const INITIAL_EDGES: Edge[] = [
+    // Phase 1 -> Phase 2
+    { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e1-3", source: "1", target: "3", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e1-4", source: "1", target: "4", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e2-5", source: "2", target: "5", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+    { id: "e3-6", source: "3", target: "6", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+
+    // Phase 2 -> Phase 3
+    { id: "e4-7", source: "4", target: "7", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e5-8", source: "5", target: "8", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+
+    // Phase 3 -> Phase 4
+    { id: "e7-9", source: "7", target: "9", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e8-10", source: "8", target: "10", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+
+    // Phase 4 -> Phase 5
+    { id: "e9-11", source: "9", target: "11", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+
+    // Phase 5 -> Phase 6
+    { id: "e11-12", source: "11", target: "12", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+    { id: "e11-13", source: "11", target: "13", animated: true, style: { stroke: "#c0c1ff", strokeWidth: 2 } },
+
+    // Phase 6 -> Phase 7
+    { id: "e12-14", source: "12", target: "14", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+    { id: "e13-14", source: "13", target: "14", animated: true, style: { stroke: "#c3f400", strokeWidth: 2 } },
+];
 
 interface RoadmapGraphProps {
     onOpenDoubtSolver?: () => void;
@@ -406,238 +348,211 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
     const [activePreset, setActivePreset] = useState("");
     const [level, setLevel] = useState("mid");
     const [isGenerating, setIsGenerating] = useState(false);
-    const [roadmapTitle, setRoadmapTitle] = useState("");
-    const [roadmapOverview, setRoadmapOverview] = useState("");
-    const [phases, setPhases] = useState<RoadmapPhase[]>([]);
-    
-    // Checked State mapping title -> boolean
-    const [checkedState, setCheckedState] = useState<Record<string, boolean>>({});
+    const [roadmapTitle, setRoadmapTitle] = useState("Full-Stack Web Engineering Roadmap");
+    const [roadmapOverview, setRoadmapOverview] = useState("Comprehensive 7-phase node graph roadmap spanning core language runtimes to production cloud observability.");
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
-    // Expanded Drawers mapping title -> boolean
-    const [expandedDrawers, setExpandedDrawers] = useState<Record<string, boolean>>({});
+    const nodeTypes = useMemo(() => ({ roadmapNode: CustomRoadmapNode }), []);
 
-    const toggleCheck = (title: string) => {
-        setCheckedState((prev) => ({
-            ...prev,
-            [title]: !prev[title],
-        }));
-    };
+    const [nodes, setNodes, onNodesChange] = useNodesState(INITIAL_NODES as Node[]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(INITIAL_EDGES);
 
-    const toggleDrawer = (title: string) => {
-        setExpandedDrawers((prev) => ({
-            ...prev,
-            [title]: !prev[title],
-        }));
+    const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
+        setSelectedNode(node);
+    }, []);
+
+    const toggleNodeStatus = (nodeId: string, currentStatus?: string) => {
+        const nextStatus = currentStatus === "done" ? "learning" : currentStatus === "learning" ? "skip" : "done";
+        setNodes((prevNodes) =>
+            prevNodes.map((n) => {
+                if (n.id === nodeId) {
+                    return {
+                        ...n,
+                        data: {
+                            ...n.data,
+                            status: nextStatus,
+                        },
+                    };
+                }
+                return n;
+            })
+        );
+        if (selectedNode && selectedNode.id === nodeId) {
+            setSelectedNode((prev) => prev ? { ...prev, data: { ...prev.data, status: nextStatus } } : null);
+        }
     };
 
     const generateRoadmap = async (role: string, expLevel: string) => {
+        if (!role.trim()) return;
         setIsGenerating(true);
+        setErrorMsg(null);
+        setRoadmapTitle(`${role} Roadmap`);
+        setRoadmapOverview(`Generating customized pathway for ${role} (${expLevel} level)...`);
+
         try {
             const res = await fetch("/api/roadmap", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ interest: role, level: expLevel }),
+                body: JSON.stringify({ domain: role, experienceLevel: expLevel }),
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                if (data.phases && Array.isArray(data.phases) && data.phases.length > 0) {
-                    const formattedPhases: RoadmapPhase[] = data.phases.map((p: any, idx: number) => ({
-                        phaseNum: idx + 1,
-                        phaseName: p.phaseName || `Phase ${idx + 1}: ${role} Foundations`,
-                        weeks: p.weeks || `Weeks ${idx * 2 + 1}–${idx * 2 + 3}`,
-                        topics: (p.topics || []).map((t: any) => ({
-                            title: t.title || "Core Technical Competency",
-                            description: t.description || "Master key architectural patterns and production best practices.",
-                            drawerItems: {
-                                label1: "Key Concepts",
-                                val1: Array.isArray(t.keyConcepts) ? t.keyConcepts.join(" • ") : (t.keyConcepts || "Core Foundations"),
-                                label2: "Architectural Notes",
-                                val2: t.notes || "Apply production patterns and best practices.",
-                                label3: "Hands-on Exercise",
-                                val3: `Build and benchmark ${t.title || "this module"} in sandbox.`,
-                            },
-                            youtubeSearchQuery: t.youtubeSearchQuery || `${t.title || role} tutorial`,
-                        })),
-                    }));
-
-                    setPhases(formattedPhases);
-                    if (data.roleTitle) setRoadmapTitle(data.roleTitle);
-                    if (data.overview) setRoadmapOverview(data.overview);
-                    setIsGenerating(false);
-                    return;
-                }
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || `Failed to generate AI roadmap (HTTP ${res.status})`);
             }
-        } catch (err) {
-            console.warn("API roadmap generation fallback trigger:", err);
-        }
 
-        // Preset / Dynamic Fallback
-        if (DOMAIN_ROADMAPS[role]) {
-            setPhases(DOMAIN_ROADMAPS[role]);
-            setRoadmapOverview(`Comprehensive step-by-step pathway tailored for ${role}.`);
-        } else {
-            setPhases([
-                {
-                    phaseNum: 1,
-                    phaseName: `Phase 1: ${role} Foundations & Core Architecture`,
-                    weeks: "Weeks 1–3",
-                    topics: [
-                        {
-                            title: `${role} Core Fundamentals & Tooling`,
-                            description: `Master fundamental building blocks, core runtime paradigms, and design patterns essential for ${role}.`,
-                            drawerItems: {
-                                label1: "Target Competency",
-                                val1: `Advanced ${role} primitives and design contracts`,
-                                label2: "Recommended Tutorial",
-                                val2: `${role} Masterclass & Deep Dive`,
-                                label3: "Hands-on Goal",
-                                val3: `Implement end-to-end benchmark project for ${role}`,
-                            },
-                            youtubeSearchQuery: `${role} architecture tutorial`,
+            const data = await res.json();
+
+            if (data.nodes && Array.isArray(data.nodes) && data.nodes.length > 0) {
+                const formattedNodes: Node[] = data.nodes.map((n: any, idx: number) => {
+                    const defaultY = Math.floor(idx / 2) * 220;
+                    const defaultX = (idx % 2 === 0 ? -180 : 180);
+
+                    const posX = (n.position && typeof n.position.x === "number") ? n.position.x : defaultX;
+                    const posY = (n.position && typeof n.position.y === "number") ? n.position.y : defaultY;
+
+                    return {
+                        id: n.id || `node-${idx + 1}`,
+                        position: { x: posX, y: posY },
+                        data: {
+                            label: n.label || "Technical Competency",
+                            phase: n.phase || `Phase ${Math.floor(idx / 3) + 1}`,
+                            type: n.type || (idx % 3 === 0 ? "main" : "subtopic"),
+                            description: n.description || "Master key architecture primitives and production patterns.",
+                            keyConcepts: n.keyConcepts || "Core Primitives & Best Practices",
+                            notes: n.notes || "Apply production design patterns and benchmark throughput.",
+                            youtubeQuery: n.youtubeQuery || n.youtubeSearchQuery || `${n.label || role} tutorial`,
+                            youtubeSearchQuery: n.youtubeQuery || n.youtubeSearchQuery || `${n.label || role} tutorial`,
+                            status: n.status || "learning",
                         },
-                        {
-                            title: `${role} Performance & Security Hardening`,
-                            description: `Optimize throughput, reduce latency spikes, and harden security boundaries for ${role} workloads.`,
-                            drawerItems: {
-                                label1: "Focus Area",
-                                val1: "Performance profiling & thread safety",
-                                label2: "Production Checklist",
-                                val2: "Zero-downtime deployment & fault recovery",
-                                label3: "Benchmark Goal",
-                                val3: "Profile latency bottlenecks using flamegraphs",
-                            },
-                            youtubeSearchQuery: `${role} performance optimization guide`,
-                        },
-                    ],
-                },
-                {
-                    phaseNum: 2,
-                    phaseName: `Phase 2: Advanced ${role} Systems & Cloud Production`,
-                    weeks: "Weeks 4–6",
-                    topics: [
-                        {
-                            title: `Distributed ${role} Scaling & Observability`,
-                            description: `Architect multi-region deployment, metric telemetry counters, distributed tracing spans, and SLI/SLA alerts.`,
-                            drawerItems: {
-                                label1: "Observability Spec",
-                                val1: "OpenTelemetry distributed tracing spans",
-                                label2: "Architecture Blueprint",
-                                val2: "Multi-region fallback & traffic routing",
-                                label3: "Final Capstone",
-                                val3: "Deploy automated Kubernetes canary rollout",
-                            },
-                            youtubeSearchQuery: `${role} distributed system design tutorial`,
-                        },
-                    ],
-                },
-            ]);
-            setRoadmapOverview(`Custom AI-generated learning pathway tailored for ${role} (${level} level).`);
+                        type: "roadmapNode",
+                    };
+                });
+
+                const formattedEdges: Edge[] = (data.edges && Array.isArray(data.edges) && data.edges.length > 0)
+                    ? data.edges.map((e: any, i: number) => ({
+                          id: e.id || `e${e.source}-${e.target}-${i}`,
+                          source: String(e.source),
+                          target: String(e.target),
+                          animated: true,
+                          style: { stroke: "#c3f400", strokeWidth: 2 },
+                      }))
+                    : formattedNodes.slice(0, -1).map((n, i) => ({
+                          id: `e${n.id}-${formattedNodes[i + 1].id}`,
+                          source: n.id,
+                          target: formattedNodes[i + 1].id,
+                          animated: true,
+                          style: { stroke: "#c3f400", strokeWidth: 2 },
+                      }));
+
+                setNodes(formattedNodes);
+                setEdges(formattedEdges);
+                if (data.roleTitle) setRoadmapTitle(data.roleTitle);
+                if (data.overview) setRoadmapOverview(data.overview);
+            } else {
+                throw new Error("Roadmap API returned an empty or invalid node structure.");
+            }
+        } catch (err: any) {
+            console.error("API roadmap generation error:", err);
+            setErrorMsg(err?.message || "Unable to connect to AI roadmap service. Please try again.");
+        } finally {
+            setIsGenerating(false);
         }
-        setRoadmapTitle(`${role} Roadmap`);
-        setIsGenerating(false);
     };
 
     const handlePresetClick = (preset: string) => {
         setActivePreset(preset);
         setTargetRole(preset);
-        setRoadmapTitle(`${preset} Roadmap`);
-        if (DOMAIN_ROADMAPS[preset]) {
-            setPhases(DOMAIN_ROADMAPS[preset]);
-            setRoadmapOverview(`Comprehensive step-by-step pathway tailored for ${preset}.`);
-        } else {
-            generateRoadmap(preset, level);
-        }
+        generateRoadmap(preset, level);
     };
 
     const handleGenerate = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
-        if (!targetRole.trim()) {
-            setPhases([]);
-            setRoadmapTitle("");
-            setRoadmapOverview("");
-            setActivePreset("");
-            return;
-        }
+        if (!targetRole.trim()) return;
         generateRoadmap(targetRole.trim(), level);
     };
 
     return (
         <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 text-[#e2e2eb] font-sans">
             
-            {/* ==========================================
-                GENERATOR CONSOLE / TOP CARD
-                ========================================== */}
-            <section className="relative w-full rounded-2xl bg-gradient-to-br from-[#1e1f26] via-[#191b22] to-[#0c0e14] p-6 lg:p-8 shadow-2xl overflow-hidden border border-white/10">
-                {/* Glow ambient background accents */}
+            {/* Top Generator Control Card */}
+            <section className="relative w-full rounded-3xl bg-gradient-to-br from-[#1e1f26] via-[#191b22] to-[#0c0e14] p-6 lg:p-8 shadow-2xl overflow-hidden border border-white/10">
                 <div className="absolute -top-32 -right-24 w-96 h-96 rounded-full bg-[#c3f400]/10 blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-[#d4004b]/10 blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col gap-6">
-                    {/* Header title & description */}
                     <div className="flex flex-col gap-2 max-w-3xl">
+                        <div className="flex items-center gap-2">
+                            <span className="px-3 py-1 rounded-full bg-[#c3f400]/20 text-[#c3f400] text-xs font-black uppercase tracking-wider border border-[#c3f400]/40">
+                                7-Phase Multi-Level Node Graph
+                            </span>
+                            <span className="text-xs text-slate-400 font-mono">roadmap.sh Engine</span>
+                        </div>
                         <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-                            Personalized Engineering Roadmap
+                            Personalized Engineering Node Graph
                         </h1>
                         <p className="text-sm text-[#c4c9ac] leading-relaxed">
-                            Enter your target engineering domain to generate an interactive node-by-node learning pathway complete with curated industry-grade tutorials, system design concepts, and actionable study notes.
+                            Generate deep multi-level interactive roadmaps spanning 7 explicit sequential progression phases complete with pan/zoom canvas, trade-offs analysis, and curated YouTube video links.
                         </p>
                     </div>
 
-                    {/* Inputs Row */}
-                    <form onSubmit={handleGenerate} className="flex flex-col md:flex-row items-stretch gap-3 mt-1">
+                    {/* Error Toast */}
+                    {errorMsg && (
+                        <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium animate-fadeIn">
+                            <div className="flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 text-rose-400" />
+                                <span>{errorMsg}</span>
+                            </div>
+                            <button onClick={() => setErrorMsg(null)} className="text-rose-400 hover:text-white">
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Form Controls */}
+                    <form onSubmit={handleGenerate} className="flex flex-col md:flex-row items-stretch gap-3">
                         <div className="relative flex-1">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#c4c9ac] text-xl">terminal</span>
+                            <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 text-[#c4c9ac] w-5 h-5" />
                             <input
                                 type="text"
                                 value={targetRole}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setTargetRole(val);
-                                    if (!val.trim()) {
-                                        setActivePreset("");
-                                        setPhases([]);
-                                        setRoadmapTitle("");
-                                        setRoadmapOverview("");
-                                    }
-                                }}
-                                placeholder="e.g. Distributed Systems, Kubernetes Platform Architect..."
-                                maxLength={200}
-                                className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#0c0e14] text-white font-medium placeholder:text-[#c4c9ac]/50 focus:outline-none focus:ring-2 focus:ring-[#c3f400] transition-all shadow-inner text-sm"
+                                onChange={(e) => setTargetRole(e.target.value)}
+                                placeholder="e.g. Frontend Architecture, Systems Engineer, Java Specialist..."
+                                disabled={isGenerating}
+                                className="w-full h-12 pl-11 pr-4 rounded-xl bg-[#0c0e14] text-white font-medium placeholder:text-[#c4c9ac]/50 focus:outline-none focus:ring-2 focus:ring-[#c3f400] transition-all text-sm disabled:opacity-60"
                             />
                         </div>
                         <div className="relative min-w-[210px]">
                             <select
                                 value={level}
                                 onChange={(e) => setLevel(e.target.value)}
-                                className="w-full h-12 pl-4 pr-10 rounded-xl bg-[#0c0e14] text-white font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-[#c3f400] cursor-pointer transition-all text-sm border-0"
+                                disabled={isGenerating}
+                                className="w-full h-12 pl-4 pr-10 rounded-xl bg-[#0c0e14] text-white font-medium appearance-none focus:outline-none focus:ring-2 focus:ring-[#c3f400] cursor-pointer transition-all text-sm border-0 disabled:opacity-60"
                             >
                                 <option value="entry">Entry-Level (0-2 yrs)</option>
                                 <option value="mid">Mid-Level (2-5 yrs)</option>
                                 <option value="senior">Senior Engineer (5+ yrs)</option>
                                 <option value="lead">Staff / Principal Architect</option>
                             </select>
-                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#c4c9ac] pointer-events-none text-xl">expand_more</span>
                         </div>
                         <button
                             type="submit"
                             disabled={isGenerating}
-                            className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#abd600] to-[#c3f400] text-[#283500] font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_24px_-4px_rgba(195,244,0,0.35)] hover:brightness-110 active:scale-[0.98] transition-all shrink-0 cursor-pointer"
+                            className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#abd600] to-[#c3f400] text-[#283500] font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_24px_-4px_rgba(195,244,0,0.35)] hover:brightness-110 transition-all cursor-pointer disabled:opacity-75"
                         >
-                            <span className={`material-symbols-outlined text-lg ${isGenerating ? "animate-spin" : ""}`}>
-                                {isGenerating ? "sync" : "magic_button"}
-                            </span>
-                            <span>{isGenerating ? "Synthesizing..." : "Generate"}</span>
+                            <Sparkles className={`w-4 h-4 ${isGenerating ? "animate-spin" : ""}`} />
+                            <span>{isGenerating ? "Synthesizing 7-Phase Graph..." : "Generate Deep Roadmap"}</span>
                         </button>
                     </form>
 
                     {/* Presets Row */}
-                    <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
                         <span className="text-[#c4c9ac] uppercase tracking-wider font-bold text-[11px] mr-1">Presets:</span>
                         {PRESET_DOMAINS.map((preset) => (
                             <button
                                 key={preset}
                                 onClick={() => handlePresetClick(preset)}
+                                disabled={isGenerating}
                                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                                     activePreset === preset
                                         ? "bg-[#c3f400]/20 text-[#c3f400] border border-[#c3f400]/40 font-bold"
@@ -651,139 +566,123 @@ export default function RoadmapGraph({ onOpenDoubtSolver }: RoadmapGraphProps) {
                 </div>
             </section>
 
-            {/* Active Roadmap Header */}
-            {phases.length > 0 && (
-                <section className="flex flex-col gap-2 pt-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#282a30] flex items-center justify-center text-[#c3f400] shadow-sm">
-                            <span className="material-symbols-outlined text-xl">layers</span>
-                        </div>
-                        <h2 className="text-2xl font-bold tracking-tight text-white">
-                            {roadmapTitle}
-                        </h2>
+            {/* Graph Header Banner */}
+            <section className="flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-[#282a30] flex items-center justify-center text-[#c3f400]">
+                        <Layers className="w-4 h-4" />
                     </div>
-                    <p className="text-sm text-[#c4c9ac] max-w-4xl pl-12 leading-relaxed">
-                        {roadmapOverview}
-                    </p>
-                </section>
-            )}
-
-            {/* Roadmap Phases Timeline Stack */}
-            {phases.length > 0 && (
-                <section className="flex flex-col gap-8">
-                    {phases.map((phase) => (
-                    <div key={phase.phaseNum} className="flex flex-col gap-4">
-                        {/* Phase Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-[#c3f400] text-[#283500] text-sm font-bold flex items-center justify-center shadow-[0_0_16px_rgba(195,244,0,0.3)]">
-                                {phase.phaseNum}
-                            </div>
-                            <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                                <h3 className="text-lg font-bold text-white">
-                                    {phase.phaseName}
-                                </h3>
-                            </div>
-                        </div>
-
-                        {/* Phase Topic Cards */}
-                        <div className="flex flex-col gap-3 pl-0 lg:pl-12">
-                            {phase.topics.map((topic) => {
-                                const isChecked = !!checkedState[topic.title];
-                                const isExpanded = !!expandedDrawers[topic.title];
-
-                                return (
-                                    <div
-                                        key={topic.title}
-                                        className="topic-row rounded-2xl bg-[#1e1f26] p-4 lg:p-6 transition-all hover:bg-[#282a30] border border-white/5"
-                                    >
-                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                            <div className="flex items-start gap-4">
-                                                <button
-                                                    onClick={() => toggleCheck(topic.title)}
-                                                    className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-transform active:scale-90 cursor-pointer ${
-                                                        isChecked
-                                                            ? "bg-[#c3f400] text-[#283500]"
-                                                            : "bg-[#33343b] text-transparent hover:ring-2 hover:ring-[#c3f400]"
-                                                    }`}
-                                                >
-                                                    <span className="material-symbols-outlined text-base font-bold">check</span>
-                                                </button>
-
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-2 flex-wrap">
-                                                        <h4 className={`text-base font-semibold text-white ${isChecked ? "line-through opacity-70" : ""}`}>
-                                                            {topic.title}
-                                                        </h4>
-                                                        {isChecked && (
-                                                            <span className="px-2 py-0.5 rounded-full bg-[#c3f400]/20 text-[#c3f400] text-[10px] font-bold uppercase">
-                                                                COMPLETED
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <p className="text-xs text-[#c4c9ac] leading-relaxed">
-                                                        {topic.description}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 self-end md:self-auto">
-                                                <a
-                                                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(topic.youtubeSearchQuery)}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="px-4 py-2 rounded-xl bg-[#d4004b]/20 text-[#ffb2ba] hover:bg-[#d4004b]/30 font-bold text-xs flex items-center gap-2 transition-all"
-                                                >
-                                                    <span className="material-symbols-outlined text-base text-[#ffb2ba]">smart_display</span>
-                                                    <span>Watch Tutorial</span>
-                                                </a>
-                                                <button
-                                                    onClick={() => toggleDrawer(topic.title)}
-                                                    className="w-9 h-9 rounded-xl bg-[#33343b]/60 flex items-center justify-center text-[#c4c9ac] hover:text-white transition-transform cursor-pointer"
-                                                >
-                                                    <span className={`material-symbols-outlined text-xl transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}>
-                                                        expand_more
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Expandable Drawer Content */}
-                                        {isExpanded && (
-                                            <div className="pt-4 mt-4 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
-                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
-                                                        {topic.drawerItems.label1}
-                                                    </span>
-                                                    <span className="text-xs font-medium text-white">
-                                                        {topic.drawerItems.val1}
-                                                    </span>
-                                                </div>
-                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
-                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
-                                                        {topic.drawerItems.label2}
-                                                    </span>
-                                                    <span className="text-xs font-medium text-white">
-                                                        {topic.drawerItems.val2}
-                                                    </span>
-                                                </div>
-                                                <div className="p-3 rounded-xl bg-[#0c0e14]/80 flex flex-col gap-1 border border-white/5">
-                                                    <span className="text-[10px] font-bold uppercase text-[#c4c9ac]">
-                                                        {topic.drawerItems.label3}
-                                                    </span>
-                                                    <span className="text-xs font-medium text-white">
-                                                        {topic.drawerItems.val3}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                ))}
+                    <h2 className="text-2xl font-extrabold text-white">{roadmapTitle}</h2>
+                </div>
+                <p className="text-xs text-[#c4c9ac] pl-11">{roadmapOverview}</p>
             </section>
-            )}
+
+            {/* REACTFLOW INTERACTIVE CANVAS CONTAINER */}
+            <section className="relative w-full h-[750px] rounded-3xl bg-[#0c0e14] border border-white/10 overflow-hidden shadow-2xl">
+                {isGenerating && (
+                    <div className="absolute inset-0 z-30 bg-[#0c0e14]/90 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
+                        <Sparkles className="w-8 h-8 text-[#c3f400] animate-spin" />
+                        <span className="text-sm font-bold text-white">Generating customized pathway for {targetRole || "selected domain"}...</span>
+                    </div>
+                )}
+
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    nodeTypes={nodeTypes}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onNodeClick={onNodeClick}
+                    fitView
+                    attributionPosition="bottom-right"
+                    className="bg-[#0c0e14]"
+                >
+                    <Background color="#33343b" gap={28} size={1} />
+                    <Controls className="!bg-[#191b22] !border-white/10 !text-white" />
+                    <MiniMap
+                        nodeColor={(n) => (n.data?.type === "main" ? "#c3f400" : "#1e1f26")}
+                        maskColor="rgba(12, 14, 20, 0.7)"
+                        className="!bg-[#191b22] !border-white/10 rounded-xl"
+                    />
+                </ReactFlow>
+            </section>
+
+            {/* NODE INSPECTOR SIDE DRAWER */}
+            {selectedNode && (() => {
+                const nodeData = selectedNode.data as unknown as RoadmapNodeData;
+                const youtubeQuery = (nodeData.youtubeQuery || nodeData.youtubeSearchQuery || nodeData.label) as string;
+
+                return (
+                    <div className="fixed inset-0 z-50 bg-[#0c0e14]/80 backdrop-blur-sm flex items-center justify-end p-4 lg:p-6 animate-fadeIn">
+                        <div className="w-full max-w-xl bg-[#191b22] border border-white/10 rounded-3xl p-6 lg:p-8 shadow-2xl flex flex-col gap-6 text-white max-h-[90vh] overflow-y-auto custom-scrollbar relative">
+                            <button
+                                onClick={() => setSelectedNode(null)}
+                                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-[#282a30] text-[#c4c9ac] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+
+                            <div className="flex flex-col gap-2 border-b border-white/10 pb-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="px-3 py-1 rounded-full bg-[#c3f400]/20 text-[#c3f400] text-[10px] font-black uppercase tracking-wider w-fit border border-[#c3f400]/30">
+                                        {(nodeData.phase as string) || "Phase Topic"}
+                                    </span>
+                                    <button
+                                        onClick={() => toggleNodeStatus(selectedNode.id, nodeData.status)}
+                                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border cursor-pointer transition-all ${
+                                            nodeData.status === "done"
+                                                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30"
+                                                : nodeData.status === "skip"
+                                                ? "bg-slate-700/40 text-slate-400 border-slate-600/40 hover:bg-slate-700/60"
+                                                : "bg-[#c3f400]/20 text-[#c3f400] border-[#c3f400]/40 hover:bg-[#c3f400]/30"
+                                        }`}
+                                    >
+                                        Status: {nodeData.status || "learning"} (click to toggle)
+                                    </button>
+                                </div>
+                                <h3 className="text-2xl font-extrabold text-white pr-10">{(nodeData.label as string)}</h3>
+                            </div>
+
+                            <div className="flex flex-col gap-4 text-xs">
+                                <div className="flex flex-col gap-1.5">
+                                    <span className="font-bold text-[#c4c9ac] uppercase tracking-wider text-[10px]">Overview</span>
+                                    <p className="text-slate-200 text-sm leading-relaxed">{(nodeData.description as string)}</p>
+                                </div>
+
+                                {nodeData.keyConcepts && (
+                                    <div className="p-4 rounded-2xl bg-[#0c0e14] border border-white/5 flex flex-col gap-1.5">
+                                        <span className="font-bold text-[#c3f400] uppercase tracking-wider text-[10px] flex items-center gap-1">
+                                            <BookOpen className="w-3.5 h-3.5" /> Key Architectural Concepts
+                                        </span>
+                                        <p className="text-xs font-medium text-white">{(nodeData.keyConcepts as string)}</p>
+                                    </div>
+                                )}
+
+                                {nodeData.notes && (
+                                    <div className="p-4 rounded-2xl bg-[#0c0e14] border border-white/5 flex flex-col gap-1.5">
+                                        <span className="font-bold text-indigo-400 uppercase tracking-wider text-[10px]">Production Trade-Offs & Notes</span>
+                                        <p className="text-xs font-medium text-slate-300">{(nodeData.notes as string)}</p>
+                                    </div>
+                                )}
+
+                                {youtubeQuery && (
+                                    <a
+                                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-2 flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-[#d4004b]/20 hover:bg-[#d4004b]/30 text-[#ffb2ba] font-bold text-xs transition-all border border-[#d4004b]/30 shadow-md cursor-pointer"
+                                    >
+                                        <Video className="w-4 h-4 text-[#ffb2ba]" />
+                                        <span>Watch Curated Tutorials for "{youtubeQuery}"</span>
+                                        <ExternalLink className="w-3.5 h-3.5 ml-auto opacity-70" />
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
+
         </div>
     );
 }

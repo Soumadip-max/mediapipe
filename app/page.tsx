@@ -8,11 +8,16 @@ import RoadmapGraph from "@/components/learning/RoadmapGraph";
 import AtsChecker from "@/components/job-prep/AtsChecker";
 import LinkedinOptimizer from "@/components/job-prep/LinkedinOptimizer";
 import ChatDrawer from "@/components/doubt-solver/ChatDrawer";
+import UserProfileView from "@/components/profile/UserProfileView";
 import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState<MainTab>("home");
     const [activeJobSubTab, setActiveJobSubTab] = useState<JobSubTab>("mock-interview");
+
+    const handleTabChange = (tab: MainTab) => {
+        setActiveTab(tab);
+    };
 
     return (
         <KineticGrid className="min-h-screen flex flex-col font-sans selection:bg-[#c3f400]/30 selection:text-[#c3f400]">
@@ -56,7 +61,32 @@ export default function Home() {
                         <ChatDrawer />
                     </div>
                 )}
+
+                {/* 5. Candidate Evaluation Profile Pillar */}
+                {activeTab === "profile" && (
+                    <div className="w-full max-w-7xl">
+                        <UserProfileView onNavigateTab={handleTabChange} />
+                    </div>
+                )}
             </main>
+
+            {/* Footer */}
+            <footer className="w-full border-t border-slate-800/60 py-6 px-4 bg-[#05070b] text-center text-xs text-slate-500">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-300">Zenith AI Platform</span>
+                        <span>© 2026 Zenith Career Systems Inc. All rights reserved.</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-slate-400">
+                        <button onClick={() => handleTabChange("home")} className="hover:text-[#c4f82a] transition-colors">
+                            Home
+                        </button>
+                        <button onClick={() => handleTabChange("learning")} className="hover:text-[#c4f82a] transition-colors">
+                            Roadmaps
+                        </button>
+                    </div>
+                </div>
+            </footer>
         </KineticGrid>
     );
 }
