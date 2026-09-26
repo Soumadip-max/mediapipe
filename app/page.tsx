@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import React, { useState } from "react";
 import TopNavbar, { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
 import LandingHero from "@/components/landing/LandingHero";
 import FaceAnalyzer from "@/components/job-prep/FaceAnalyzer";
@@ -9,26 +8,14 @@ import RoadmapGraph from "@/components/learning/RoadmapGraph";
 import AtsChecker from "@/components/job-prep/AtsChecker";
 import LinkedinOptimizer from "@/components/job-prep/LinkedinOptimizer";
 import ChatDrawer from "@/components/doubt-solver/ChatDrawer";
+import UserProfileView from "@/components/profile/UserProfileView";
 import KineticGrid from "@/components/ui/kinetic-grid";
 
 export default function Home() {
-    const { user, isLoading } = useUser();
     const [activeTab, setActiveTab] = useState<MainTab>("home");
     const [activeJobSubTab, setActiveJobSubTab] = useState<JobSubTab>("mock-interview");
 
-    // Auto-route authenticated users to the learning dashboard
-    useEffect(() => {
-        if (!isLoading && user && activeTab === "home") {
-            setActiveTab("learning");
-        }
-    }, [user, isLoading, activeTab]);
-
-    // Protect inner tabs from unauthenticated users
     const handleTabChange = (tab: MainTab) => {
-        if (tab !== "home" && !user && !isLoading) {
-            window.location.href = "/auth/login";
-            return;
-        }
         setActiveTab(tab);
     };
 
@@ -74,6 +61,13 @@ export default function Home() {
                         <ChatDrawer />
                     </div>
                 )}
+
+                {/* 5. Candidate Evaluation Profile Pillar */}
+                {activeTab === "profile" && (
+                    <div className="w-full max-w-7xl">
+                        <UserProfileView onNavigateTab={handleTabChange} />
+                    </div>
+                )}
             </main>
 
             {/* Footer */}
@@ -93,7 +87,6 @@ export default function Home() {
                     </div>
                 </div>
             </footer>
-        </div>
         </KineticGrid>
     );
 }

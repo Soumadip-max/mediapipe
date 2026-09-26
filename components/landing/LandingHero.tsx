@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { MainTab, JobSubTab } from "@/components/navigation/TopNavbar";
+import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 import HoverFooter from "@/components/ui/hover-footer";
 
 interface LandingHeroProps {
@@ -10,6 +11,7 @@ interface LandingHeroProps {
 }
 
 export default function LandingHero({ setActiveTab, setActiveJobSubTab }: LandingHeroProps) {
+    const { isSignedIn } = useUser();
     const [searchRole, setSearchRole] = useState("");
     const [ctaEmail, setCtaEmail] = useState("");
     const [ctaSubmitted, setCtaSubmitted] = useState(false);
@@ -87,22 +89,20 @@ export default function LandingHero({ setActiveTab, setActiveJobSubTab }: Landin
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-3">
-                        <a
-                            href="/auth/login"
-                            className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all"
-                        >
-                            Log In
-                        </a>
-                        <a
-                            href="/auth/login"
+                        {!isSignedIn ? (
+                            <SignInButton mode="modal">
+                                <button className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/15 bg-white/5 text-xs font-semibold text-white hover:bg-white/10 transition-all cursor-pointer">
+                                    Log In
+                                </button>
+                            </SignInButton>
+                        ) : null}
+                        <button
+                            onClick={() => setActiveTab("learning")}
                             className="inline-flex items-center justify-center px-5 py-2 rounded-full bg-[#c3f400] text-xs font-bold text-[#283500] hover:bg-[#abd600] transition-all shadow-[0_0_20px_-4px_rgba(195,244,0,0.5)] cursor-pointer"
                         >
                             Get Started
-                        </a>
                         </button>
-                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#283500] shrink-0">
-                            <span className="material-symbols-outlined text-lg">person</span>
-                        </div>
+                        {isSignedIn ? <UserButton /> : null}
                     </div>
                 </div>
             </header>

@@ -2,9 +2,9 @@
 
 import React from "react";
 import { BookOpen, Briefcase, MessageSquare, Video, FileText, Sparkles, User, ArrowLeft } from "lucide-react";
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 
-export type MainTab = "home" | "learning" | "job-prep" | "doubt-solver";
+export type MainTab = "home" | "learning" | "job-prep" | "doubt-solver" | "profile";
 export type JobSubTab = "mock-interview" | "ats-checker" | "linkedin-optimizer";
 
 const ZenithLogo = () => (
@@ -37,7 +37,7 @@ export default function TopNavbar({
     activeJobSubTab,
     setActiveJobSubTab,
 }: TopNavbarProps) {
-    const { user, isLoading } = useUser();
+    const { isSignedIn } = useUser();
 
     if (activeTab === "home") return null;
 
@@ -102,32 +102,29 @@ export default function TopNavbar({
                             <span>Doubt Solver</span>
                         </button>
 
+                        <button
+                            onClick={() => setActiveTab("profile")}
+                            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                activeTab === "profile"
+                                    ? "bg-[#c4f82a] text-[#07090e] font-extrabold shadow-[0_0_15px_rgba(196,248,42,0.3)]"
+                                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                            }`}
+                        >
+                            <User className="w-3.5 h-3.5" />
+                            <span>Evaluation Profile</span>
+                        </button>
                     </nav>
 
-                    {/* Right Hand Profile */}
-                    <div className="flex items-center gap-4">
-                        {isLoading ? (
-                            <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse border border-slate-700"></div>
-                        ) : user ? (
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs font-medium text-slate-300 hidden sm:inline-block">
-                                    {user.name || user.email}
-                                </span>
-                                {user.picture ? (
-                                    <img src={user.picture} alt="Profile" className="w-8 h-8 rounded-full border border-slate-600" />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
-                                        <User className="w-4 h-4" />
-                                    </div>
-                                )}
-                                <a href="/auth/logout" className="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
-                                    Logout
-                                </a>
-                            </div>
+                    {/* Right Hand User Avatar / Profile */}
+                    <div className="flex items-center gap-3">
+                        {!isSignedIn ? (
+                            <SignInButton mode="modal">
+                                <button className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#c4f82a] text-[#07090e] hover:bg-[#b0df26] transition-colors shadow-sm cursor-pointer">
+                                    Sign In
+                                </button>
+                            </SignInButton>
                         ) : (
-                            <a href="/auth/login" className="px-4 py-1.5 rounded-full text-xs font-bold bg-[#c4f82a] text-[#07090e] hover:bg-[#b0df26] transition-colors shadow-sm">
-                                Login
-                            </a>
+                            <UserButton />
                         )}
                     </div>
                 </div>
